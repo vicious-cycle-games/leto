@@ -1,2 +1,2 @@
-# leto
-Leto is a first-person desktop driving game.
+# Leto
+Leto is a first-person desktop driving game. **WIP REPOSITORY**
