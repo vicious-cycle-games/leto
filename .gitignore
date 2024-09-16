@@ -1,0 +1,6 @@
+/build/
+/.cache/
+/BuildProject.sh
+/RunProject.sh
+/out
+/.vs
