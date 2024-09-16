@@ -16,6 +16,7 @@
  */
 
 #include "window.h"   // Public interface parent.
+#include <gl.h>       // OpenGL function pointers.
 #include <glfw3.h>    // GLFW function pointers.
 #include <malloc.h>   // Standard allocation functions.
 #include <platform.h> // Platform macros.
@@ -26,22 +27,30 @@
  * created by @ref CreateWindow and freed + set back to NULL by @ref
  * DestroyWindow.
  */
-GLFWwindow *window_ = NULL;
+static GLFWwindow *window_ = NULL;
 
-void LetoConstructTitle_(char **buffer, char *half_title)
+static void LetoConstructTitle_(char **buffer, char *half_title)
 {
     *buffer = malloc(LETO_WINDOW_TITLE_MAX);
     if (*buffer == NULL)
     {
-        fprintf(stderr, "Failed allocation.");
+        fprintf(stderr, "Failed allocation.\n");
         *buffer = NULL;
     }
     snprintf(*buffer, LETO_WINDOW_TITLE_MAX, "%s | v" LETO_VERSION,
              half_title);
 }
 
-void LetoSetHints_(char *title)
+static void LetoSetHints_(char *title)
 {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#if defined(LETO_APPLE)
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+#endif
+
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     glfwWindowHint(GLFW_CENTER_CURSOR, GLFW_TRUE);
     glfwWindowHint(GLFW_POSITION_X, 0); // Initial position for the window.
     glfwWindowHint(GLFW_POSITION_Y, 0);
@@ -66,7 +75,7 @@ void LetoCreateWindow(leto_window_info_t *info_storage, const char *title)
     int glfw_initialized = glfwInit();
     if (glfw_initialized == GLFW_FALSE)
     {
-        fprintf(stderr, "Failed to initialize GLFW.");
+        fprintf(stderr, "Failed to initialize GLFW.\n");
         *info_storage = LETO_WINDOW_INFO_NULL;
         return;
     }
@@ -88,10 +97,10 @@ void LetoCreateWindow(leto_window_info_t *info_storage, const char *title)
     LetoSetHints_(full_title);
     window_ = glfwCreateWindow(primary_resolution->width,
                                primary_resolution->height, full_title,
-                               primary_monitor, NULL);
+                               NULL, NULL);
     if (window_ == NULL)
     {
-        fprintf(stderr, "Failed to create window.");
+        fprintf(stderr, "Failed to create window.\n");
         free(full_title);
         *info_storage = LETO_WINDOW_INFO_NULL;
         return;
@@ -100,15 +109,20 @@ void LetoCreateWindow(leto_window_info_t *info_storage, const char *title)
     // thread.
     glfwMakeContextCurrent(window_);
 
+    int glad_initialized = gladLoadGL(glfwGetProcAddress);
+    if (glad_initialized == 0)
+    {
+        fprintf(stderr, "Failed to initialize GLAD.\n");
+        free(full_title);
+        *info_storage = LETO_WINDOW_INFO_NULL;
+        return;
+    }
+    glViewport(0, 0, primary_resolution->width,
+               primary_resolution->height);
+
     info_storage->width = (uint16_t)primary_resolution->width;
     info_storage->height = (uint16_t)primary_resolution->height;
     info_storage->title = full_title;
-
-    while (!glfwWindowShouldClose(window_))
-    {
-        glfwPollEvents();
-        glfwSwapBuffers(window_);
-    }
 }
 
 void LetoDestroyWindow(leto_window_info_t *info_storage)
@@ -124,3 +138,10 @@ void LetoDestroyWindow(leto_window_info_t *info_storage)
     info_storage->height = 0;
     info_storage->title = NULL;
 }
+
+bool LetoGetWindowRunState(void)
+{
+    return !glfwWindowShouldClose(window_);
+}
+
+void LetoSwapWindowBuffers(void) { glfwSwapBuffers(window_); }

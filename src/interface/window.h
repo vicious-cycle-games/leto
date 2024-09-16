@@ -21,6 +21,8 @@
 
 // Standard fixed-width integers.
 #include <stdint.h>
+// Standard boolean macros.
+#include <stdbool.h>
 
 typedef struct
 {
@@ -36,5 +38,7 @@ typedef struct
 
 void LetoCreateWindow(leto_window_info_t *info_storage, const char *title);
 void LetoDestroyWindow(leto_window_info_t *info_storage);
+bool LetoGetWindowRunState(void);
+void LetoSwapWindowBuffers(void);
 
 #endif // LETO__WINDOW__INTERFACE

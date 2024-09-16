@@ -127,6 +127,7 @@ message(STATUS ${ASSET_DIR})
 message(STATUS "${PROJECT_NAME} source files:")
 set(PROJECT_SOURCES ${SOURCE_DIRECTORY}/main.c ${SOURCE_DIRECTORY}/platform.h
     ${SOURCE_DIRECTORY}/interface/window.h ${SOURCE_DIRECTORY}/interface/window.c 
+    ${SOURCE_DIRECTORY}/interface/renderer.h ${SOURCE_DIRECTORY}/interface/renderer.c 
     ${SOURCE_DIRECTORY}/utilities/attributes.h ${SOURCE_DIRECTORY}/utilities/macros.h)
 # Define the filename of each file without its basename.
 foreach(file ${PROJECT_SOURCES})
