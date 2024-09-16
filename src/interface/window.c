@@ -117,8 +117,6 @@ void LetoCreateWindow(leto_window_info_t *info_storage, const char *title)
         *info_storage = LETO_WINDOW_INFO_NULL;
         return;
     }
-    glViewport(0, 0, primary_resolution->width,
-               primary_resolution->height);
 
     info_storage->width = (uint16_t)primary_resolution->width;
     info_storage->height = (uint16_t)primary_resolution->height;

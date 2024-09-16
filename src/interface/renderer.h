@@ -18,14 +18,18 @@
 #ifndef LETO__RENDERER__INTERFACE
 #define LETO__RENDERER__INTERFACE
 
+#include "window.h"
 #include <gl.h>
 #include <stdbool.h>
 #include <stddef.h>
 
 typedef void (*render_function_t)(size_t argc, void **argv);
+typedef bool (*render_init_function_t)(uint16_t window_width,
+                                       uint16_t window_height);
 
-void SetRenderFunction(render_function_t func);
-void SetRenderData(size_t argc, void **argv);
-void RunRenderLoop(void);
+void LetoSetRenderFunction(render_function_t func);
+void LetoSetRenderInitFunction(render_init_function_t func);
+void LetoSetRenderData(size_t argc, void **argv);
+bool LetoRunRenderLoop(const leto_window_info_t *info);
 
 #endif // LETO__RENDERER__INTERFACE

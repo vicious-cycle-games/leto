@@ -1,5 +1,17 @@
+#include <external/shader.h>
 #include <interface/renderer.h>
 #include <interface/window.h>
+
+unsigned int basic_shader;
+
+bool display_init(uint16_t window_width, uint16_t window_height)
+{
+    basic_shader = LetoLoadShader("basic");
+    if (basic_shader == 0) return false;
+
+    glViewport(0, 0, window_width, window_height);
+    return true;
+}
 
 void display(size_t argc, void **argv)
 {
@@ -13,8 +25,11 @@ int main(void)
     leto_window_info_t window_info;
     LetoCreateWindow(&window_info, "Leto");
 
-    SetRenderFunction(display);
-    RunRenderLoop();
+    LetoSetRenderFunction(display);
+    LetoSetRenderInitFunction(display_init);
+
+    if (!LetoRunRenderLoop(&window_info)) return -1;
+    LetoUnloadShader(basic_shader);
 
     LetoDestroyWindow(&window_info);
     return 0;
