@@ -18,9 +18,15 @@
 #ifndef LETO__FILES__EXTERNAL
 #define LETO__FILES__EXTERNAL
 
+#include <stddef.h>
+
 #define LETO_FILE_PATH_MAX 256
 
 void LetoReadFile(char **buffer, const char *path);
 void LetoReadFileV(char **buffer, const char *path_format, ...);
+
+void LetoReadLines(char ***lines, size_t *line_count, const char *path);
+void LetoReadLinesV(char ***lines, size_t *line_count,
+                    const char *path_format, ...);
 
 #endif // LETO__FILES__EXTERNAL

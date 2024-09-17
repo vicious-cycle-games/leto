@@ -130,7 +130,10 @@ set(PROJECT_SOURCES ${SOURCE_DIRECTORY}/main.c ${SOURCE_DIRECTORY}/platform.h
     ${SOURCE_DIRECTORY}/interface/renderer.h ${SOURCE_DIRECTORY}/interface/renderer.c 
     ${SOURCE_DIRECTORY}/external/shader.h ${SOURCE_DIRECTORY}/external/shader.c 
     ${SOURCE_DIRECTORY}/external/files.h ${SOURCE_DIRECTORY}/external/files.c 
-    ${SOURCE_DIRECTORY}/utilities/attributes.h ${SOURCE_DIRECTORY}/utilities/macros.h)
+    ${SOURCE_DIRECTORY}/external/meshes.h ${SOURCE_DIRECTORY}/external/meshes.c 
+    ${SOURCE_DIRECTORY}/utilities/attributes.h ${SOURCE_DIRECTORY}/utilities/macros.h
+    ${SOURCE_DIRECTORY}/utilities/strings.h ${SOURCE_DIRECTORY}/utilities/strings.c
+)
 # Define the filename of each file without its basename.
 foreach(file ${PROJECT_SOURCES})
     cmake_path(GET file FILENAME CURRENT_FILENAME)

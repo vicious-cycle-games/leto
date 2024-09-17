@@ -2,6 +2,9 @@
 #include <interface/renderer.h>
 #include <interface/window.h>
 
+//! temp
+#include <external/meshes.h>
+
 unsigned int basic_shader;
 
 bool display_init(uint16_t window_width, uint16_t window_height)
@@ -22,6 +25,10 @@ void display(size_t argc, void **argv)
 
 int main(void)
 {
+    leto_mesh_t *mesh = LetoLoadMesh("cube", wavefront);
+    if (mesh == NULL) return -1;
+    free(mesh);
+
     leto_window_info_t window_info;
     LetoCreateWindow(&window_info, "Leto");
 
