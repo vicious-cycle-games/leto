@@ -51,7 +51,6 @@ static void LetoSetHints_(char *title)
 #endif
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    glfwWindowHint(GLFW_CENTER_CURSOR, GLFW_TRUE);
     glfwWindowHint(GLFW_POSITION_X, 0); // Initial position for the window.
     glfwWindowHint(GLFW_POSITION_Y, 0);
 
@@ -61,6 +60,8 @@ static void LetoSetHints_(char *title)
 #elif defined(LETO_X11)
     glfwWindowHintString(GLFW_X11_CLASS_NAME, title);
     glfwWindowHintString(GLFW_X11_INSTANCE_NAME, title);
+#else
+    (void)title;
 #endif
 }
 

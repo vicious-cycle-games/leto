@@ -16,9 +16,9 @@ static const char *GetMeshFormatExt_(leto_mesh_format_t format)
 static void InterpretLine_(leto_mesh_t *mesh, char *line,
                            char **material_name)
 {
-    if (FindSubstring(line, "# ")) return;
-    // else if (FindSubstring(line, "mtllib")) *material_name = line;
-    // else if (FindSubstring(line, "o ")) mesh->name =
+    if (FindCharacter(line, '#')) return;
+    if (FindCharacter(line, 'o')) mesh->name = (line + 2);
+    else if (FindSubstring(line, "mtllib")) *material_name = (line + 7);
 }
 
 leto_mesh_t *LetoLoadMesh(const char *name, leto_mesh_format_t format)
@@ -38,14 +38,14 @@ leto_mesh_t *LetoLoadMesh(const char *name, leto_mesh_format_t format)
     if (mesh_contents == NULL) return NULL;
 
     char *material_name = NULL;
-    for (int i = 0; i < mesh_line_count; i++)
+    for (size_t i = 0; i < mesh_line_count; i++)
     {
         char *current_line = mesh_contents[i];
         InterpretLine_(created_mesh, current_line, &material_name);
-        printf("res[%d] = %s\n", i, current_line);
+        printf("res[%zu] = %s\n", i, current_line);
     }
 
-    for (int i = 0; i < mesh_line_count; i++) free(mesh_contents[i]);
+    for (size_t i = 0; i < mesh_line_count; i++) free(mesh_contents[i]);
     free(mesh_contents);
     return created_mesh;
 }

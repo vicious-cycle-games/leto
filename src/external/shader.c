@@ -3,6 +3,7 @@
 #include <gl.h>
 #include <malloc.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 static void CheckShaderError_(unsigned int piece, unsigned int type)
 {

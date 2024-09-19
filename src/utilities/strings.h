@@ -20,7 +20,7 @@
 
 #include <stdbool.h>
 
-bool FindSubstring(char *string, char *substring);
-char *GetSubstring(const char *string, char *beginning, char *end);
+bool FindSubstring(const char *string, char *substring);
+bool FindCharacter(const char *string, char character);
 
 #endif // LETO__STRINGS__UTILITIES

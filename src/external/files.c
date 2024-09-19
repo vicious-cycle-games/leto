@@ -1,6 +1,7 @@
 #include "files.h"
 #include <malloc.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 void LetoReadFile(char **buffer, const char *path)
@@ -29,14 +30,14 @@ void LetoReadFile(char **buffer, const char *path)
         return;
     }
 
-    *buffer = calloc(size + 1, 1);
+    *buffer = calloc((size_t)size + 1, 1);
     if (*buffer == NULL)
     {
         fprintf(stderr, "Failed file allocation.\n");
         return;
     }
 
-    if (fread(*buffer, 1, size, opened_file) != size)
+    if (fread(*buffer, 1, (size_t)size, opened_file) != (size_t)size)
     {
         fprintf(stderr, "Failed to read file.\n");
         *buffer = NULL;

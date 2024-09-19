@@ -1,8 +1,22 @@
 # Project settings. If the user doesn't have at least CMake 3.29.5,
 # fail the application's build.
-cmake_minimum_required(VERSION 3.30.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.29.5..3.30.2 FATAL_ERROR)
 project("Leto" DESCRIPTION "Leto is an open-world driving game." LANGUAGES C)
 message(STATUS "Attempting to build a ${CMAKE_BUILD_TYPE} version of ${PROJECT_NAME}.")
+
+# Make sure CMake knows where to find any modules we may have declared.
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/inc)
+
+# Make sure we're running on a supported CPU architecture.
+include(TargetArchitecture)
+target_architecture(CMAKE_TARGET_ARCHITECTURES)
+list(LENGTH CMAKE_TARGET_ARCHITECTURES cmake_target_arch_len)
+if(NOT "${cmake_target_arch_len}" STREQUAL "1")
+    message(FATAL_ERROR "Trying to compile for multiple architectures simultaneously.")
+endif()
+if(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "unknown")
+    message(FATAL_ERROR "Unsupported CPU architecture.")
+endif()
 
 # Default flags (release OR debug) for all the operating systems
 # the project supports. "Linux" flags include MacOS as well.
@@ -20,7 +34,15 @@ if(LINUX OR APPLE)
     set(C_FLAGS_DEBUG ${DEFAULT_FLAGS_LINUX} -g -fsanitize=undefined)
     set(C_FLAGS_RELEASE ${DEFAULT_FLAGS_LINUX} -Ofast)
     set(C_LINKER_FLAGS -fsanitize=undefined)
-    list(APPEND LIBRARY_LIST glfw3-linux glad2-linux cglm-linux m)
+
+    if(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "x86_64")
+        list(APPEND LIBRARY_LIST glfw3-linux-64 glad2-linux-64 cglm-linux-64 m)
+    elseif(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "i386")
+        list(APPEND LIBRARY_LIST glfw3-linux-32 glad2-linux-32 cglm-linux-32 m)
+    else()
+        list(APPEND LIBRARY_LIST glfw3-linux-arm glad2-linux-arm 
+            cglm-linux-arm m)
+    endif()
 
     # If we're running on Linux, we've gotta figure out what
     # windowing server we're running. I've configured CMake to prefer
@@ -54,7 +76,14 @@ elseif(WIN32)
     add_compile_definitions(BUILD_PLATFORM=0)
     set(C_FLAGS_DEBUG ${DEFAULT_FLAGS_WINDOWS} /fsanitize=address)
     set(C_FLAGS_RELEASE ${DEFAULT_FLAGS_WINDOWS} /O2)
-    list(APPEND LIBRARY_LIST glfw3-windows glad2-windows cglm-windows m)
+    
+    if(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "x86_64")
+        list(APPEND LIBRARY_LIST glfw3-win-64 glad2-win-64 cglm-win-64)
+    elseif(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "i386")
+        list(APPEND LIBRARY_LIST glfw3-win-32 glad2-win-32 cglm-win-32)
+    else()
+        message(FATAL_ERROR "Windows for ARM is not supported as of yet.")
+    endif()
 else()
     message(FATAL_ERROR "Unsupported operating system. Please find a machine "
         "running either Linux, Windows, or MacOS and recompile the program.")

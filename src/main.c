@@ -18,6 +18,9 @@ bool display_init(uint16_t window_width, uint16_t window_height)
 
 void display(size_t argc, void **argv)
 {
+    (void)argc; // Unused for now.
+    (void)argv;
+
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     LetoSwapWindowBuffers();

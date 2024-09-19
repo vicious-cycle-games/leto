@@ -56,7 +56,7 @@
 
 // Make sure we're running on a CPU architecture that we support.
 // I'd really rather not run on x32 processors because of registry
-// pressure, but if the user REALLY wants it we'll let it happen.
+// pressure, but if the user wants it, we'll let it happen.
 #if defined(__x86_64__) || defined(_M_X64)
     #define LETO_ARCH "x86_64"
     #define LETO_X86_64
@@ -92,7 +92,7 @@
  * changed for every commit to the code base. This rolls back to
  * zero when a new major or minor release is deployed.
  */
-#define LETO_VERSION_TWEAK 4
+#define LETO_VERSION_TWEAK 5
 
 /**
  * @brief A denotion of the current build state. This will be one

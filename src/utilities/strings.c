@@ -1,10 +1,14 @@
 #include "strings.h"
 #include <string.h>
 
-bool FindSubstring(char *string, char *substring)
+bool FindSubstring(const char *string, char *substring)
 {
     if (strstr(string, substring) != NULL) return true;
     return false;
 }
 
-char *GetSubstring(const char *string, char *beginning, char *end) {}
+bool FindCharacter(const char *string, char character)
+{
+    if (strchr(string, character) != NULL) return true;
+    return false;
+}
