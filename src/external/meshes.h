@@ -56,23 +56,30 @@ typedef struct
 
 typedef struct
 {
+    ivec3 *elements; // v/vt/vn
+    size_t element_count;
+} leto_face_t;
+
+typedef struct
+{
     const char *name;
     leto_mesh_format_t format;
-    vec4 *vertices;
+    vec3 *vertices;
+    size_t vertex_count;
     vec3 *ps_vertices;
+    size_t ps_vertex_count;
     vec3 *texture_coords;
+    size_t texture_coord_count;
     vec3 *normals;
-    // Since faces aren't necessarily constrained to a specific count of
-    // vertices, we use a two-dimension array of faces where any one face
-    // value can be accessed via faces[i][j], where i is the face number
-    // you're accessing and j is the index into the face array we're
-    // looking for. The first number in the face is the count of values in
-    // said face.
-    // Ex. f 1/3/4 :: faces[i]{3, 1, 3, 4}
-    uint32_t **faces;
+    size_t normal_count;
+    leto_face_t *faces;
+    size_t face_count;
     leto_material_t material;
 } leto_mesh_t;
 
+#define LETO_MAX_FACE_ELEMENTS 32
+
 leto_mesh_t *LetoLoadMesh(const char *name, leto_mesh_format_t format);
+void LetoUnloadMesh(leto_mesh_t *mesh);
 
 #endif // LETO__MESHES__EXTERNAL

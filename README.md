@@ -14,3 +14,8 @@ All operating systems that we plan to support in the future are below. Those mar
 - MacOS (x):
 	- x86_64 (x)
 	- arm64 (x)
+
+## Todo
+Current items are marked with (x).
+
+- Mesh loader (x)
