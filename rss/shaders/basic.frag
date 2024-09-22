@@ -1,9 +1,13 @@
 #version 460 core
-out vec4 FragColor;
-  
-in vec4 vertex_color;
+layout(location = 0) out vec4 fragmentColor;
+
+in vec2 tc;
+in vec3 pos;
+
+// uniform sampler2D texture_diffuse1;
 
 void main()
-{
-    FragColor = vertex_color;
+{    
+    fragmentColor = vec4(pos.x, pos.y, pos.z, 1.0);
+    // FragColor = texture(texture_diffuse1, tc);
 }

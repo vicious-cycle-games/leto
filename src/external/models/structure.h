@@ -116,6 +116,7 @@ typedef struct leto_mesh_t
      * lifetime.
      */
     unsigned int VAO;
+    unsigned int VBO, EBO;
 } leto_mesh_t;
 
 /**

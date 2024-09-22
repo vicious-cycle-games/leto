@@ -3,11 +3,11 @@
 
 #include "../structure.h"
 
-void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
-                          const char *line);
+void LetoProcessWavefrontMesh(leto_model_t *model,
+                              char **material_file_path, const char *line);
 
-void ProcessWavefrontMaterial(const char *path);
+void LetoProcessWavefrontMaterial(const char *path);
 
-void UploadWavefrontMesh(leto_model_t *model);
+void LetoUploadWavefrontMesh(leto_model_t *model);
 
 #endif // LETO__WAVEFRONT__FORMAT

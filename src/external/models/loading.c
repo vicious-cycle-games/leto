@@ -34,8 +34,8 @@ static void StringFormat_(leto_model_t *model, leto_model_format_t format,
     switch (format)
     {
         case wavefront:
-            processing_function = ProcessWavefrontMesh;
-            material_function = ProcessWavefrontMaterial;
+            processing_function = LetoProcessWavefrontMesh;
+            material_function = LetoProcessWavefrontMaterial;
             break;
         default:
             // Impossible.
@@ -51,7 +51,8 @@ static void StringFormat_(leto_model_t *model, leto_model_format_t format,
     }
     if (strcmp(material_file_path, "none") != 0)
         material_function(material_file_path);
-    UploadWavefrontMesh(model);
+
+    LetoUploadWavefrontMesh(model);
     free(material_file_path);
 }
 

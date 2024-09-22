@@ -1,5 +1,6 @@
 #include "wavefront.h"
 #include <external/files.h>
+#include <gl.h>
 #include <malloc.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -10,9 +11,63 @@
 static bool mesh_filled = false;
 static leto_mesh_t current_mesh;
 
-void UploadWavefrontMesh(leto_model_t *model)
+void LetoUploadWavefrontMesh(leto_model_t *model)
 {
     if (!mesh_filled) return;
+
+    glGenVertexArrays(1, &current_mesh.VAO);
+
+    glGenBuffers(1, &current_mesh.VBO);
+    glGenBuffers(1, &current_mesh.EBO);
+
+    glBindVertexArray(current_mesh.VAO);
+    // load data into vertex buffers
+    glBindBuffer(GL_ARRAY_BUFFER, current_mesh.VBO);
+    // A great thing about structs is that their memory layout is
+    // sequential for all its items. The effect is that we can simply pass
+    // a pointer to the struct and it translates perfectly to a glm::vec3/2
+    // array which again translates to 3/2 floats which translates to a
+    // byte array.
+    glBufferData(GL_ARRAY_BUFFER,
+                 current_mesh.vertices.count * sizeof(leto_vertex_t),
+                 &current_mesh.vertices._[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, current_mesh.EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 current_mesh.indices.count * sizeof(uint32_t),
+                 &current_mesh.indices._[0], GL_STATIC_DRAW);
+
+    // set the vertex attribute pointers
+    // vertex Positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(leto_vertex_t),
+                          (void *)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(leto_vertex_t),
+                          (void *)offsetof(leto_vertex_t, normal));
+    // vertex texture coords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(leto_vertex_t),
+                          (void *)offsetof(leto_vertex_t, texture));
+    // // vertex tangent
+    // glEnableVertexAttribArray(3);
+    // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+    //                       (void *)offsetof(Vertex, Tangent));
+    // // vertex bitangent
+    // glEnableVertexAttribArray(4);
+    // glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+    //                       (void *)offsetof(Vertex, Bitangent));
+    // // ids
+    // glEnableVertexAttribArray(5);
+    // glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex),
+    //                        (void *)offsetof(Vertex, m_BoneIDs));
+
+    // // weights
+    // glEnableVertexAttribArray(6);
+    // glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+    //                       (void *)offsetof(Vertex, m_Weights));
+    glBindVertexArray(0);
 
     model->meshes._ = realloc(
         model->meshes._, sizeof(leto_mesh_t) * (model->meshes.count + 1));
@@ -24,44 +79,46 @@ void UploadWavefrontMesh(leto_model_t *model)
     model->meshes._[model->meshes.count] = current_mesh;
     model->meshes.count += 1;
 
-    printf("mesh[%zu]: \n", model->meshes.count);
-    for (size_t i = 0;
-         i < model->meshes._[model->meshes.count - 1].vertices.count; i++)
-    {
-        printf("vert[%zu]: pos(%f, %f, %f), norm(%f, %f, %f), tex(%f, "
-               "%f)\n",
-               i,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .position.x,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .position.y,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .position.z,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .normal.x,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .normal.y,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .normal.z,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .texture.x,
-               model->meshes._[model->meshes.count - 1]
-                   .vertices._[i]
-                   .texture.y);
-    }
-    for (size_t i = 0;
-         i < model->meshes._[model->meshes.count - 1].indices.count; i++)
-    {
-        printf("ind[%zu]: %d\n", i,
-               model->meshes._[model->meshes.count - 1].indices._[i]);
-    }
+    // printf("mesh[%zu]: \n", model->meshes.count);
+    // for (size_t i = 0;
+    //      i < model->meshes._[model->meshes.count - 1].vertices.count;
+    //      i++)
+    // {
+    //     printf("vert[%zu]: pos(%f, %f, %f), norm(%f, %f, %f), tex(%f, "
+    //            "%f)\n",
+    //            i,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .position.x,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .position.y,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .position.z,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .normal.x,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .normal.y,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .normal.z,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .texture.x,
+    //            model->meshes._[model->meshes.count - 1]
+    //                .vertices._[i]
+    //                .texture.y);
+    // }
+    // for (size_t i = 0;
+    //      i < model->meshes._[model->meshes.count - 1].indices.count;
+    //      i++)
+    // {
+    //     printf("ind[%zu]: %d\n", i,
+    //            model->meshes._[model->meshes.count - 1].indices._[i]);
+    // }
 
     // These pointers are now contained in the model structure, so there's
     // no need to free them.
@@ -74,8 +131,8 @@ void UploadWavefrontMesh(leto_model_t *model)
     current_mesh.VAO = 0;
 }
 
-void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
-                          const char *line)
+void LetoProcessWavefrontMesh(leto_model_t *model,
+                              char **material_file_path, const char *line)
 {
     static leto_vec3_t *pos, *norm;
     static leto_vec2_t *tex;
@@ -87,7 +144,7 @@ void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
         case 'o':
             // This keyword defines a new mesh object. We simply send the
             // old one to the model and reset the storage object.
-            UploadWavefrontMesh(model);
+            LetoUploadWavefrontMesh(model);
             mesh_filled = true;
             break;
         case 'm':
@@ -146,7 +203,9 @@ void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
             }
             strcpy(string_left, line + 2);
 
-            for (size_t i = 1; i < 512; i++)
+            size_t vertices_in_face = 0;
+            for (vertices_in_face = 0; vertices_in_face < 512;
+                 vertices_in_face++)
             {
                 char *segment_left = malloc(64),
                      *segment_left_original = segment_left;
@@ -169,14 +228,14 @@ void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
                     fprintf(stderr, "Failed allocation.\n");
                     return;
                 }
-                current_mesh.indices._ =
-                    realloc(current_mesh.indices._,
-                            4 * (current_mesh.indices.count += 1));
-                if (current_mesh.indices._ == NULL)
-                {
-                    fprintf(stderr, "Failed allocation.\n");
-                    return;
-                }
+                // current_mesh.indices._ =
+                //     realloc(current_mesh.indices._,
+                //             4 * (current_mesh.indices.count += 1));
+                // if (current_mesh.indices._ == NULL)
+                // {
+                //     fprintf(stderr, "Failed allocation.\n");
+                //     return;
+                // }
 
                 current_mesh.vertices._[current_mesh.vertices.count - 1]
                     .position = pos[first_set_value - 1];
@@ -187,13 +246,38 @@ void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
                     .normal =
                     norm[strtol(segment_left + 1, &segment_left, 10) - 1];
 
-                //!! indices unimplemented
-                current_mesh.indices._[current_mesh.indices.count - 1] =
-                    current_mesh.vertices.count - 1;
+                // //!! indices unimplemented
+                // current_mesh.indices._[current_mesh.indices.count - 1] =
+                //     current_mesh.vertices.count - 1;
 
                 string_left = strdup(segment_left);
                 free(segment_left_original);
             }
+
+            //! this will fail for faces with > 4 vertices
+            current_mesh.indices._ =
+                realloc(current_mesh.indices._,
+                        4 * (current_mesh.indices.count + 6));
+            if (current_mesh.indices._ == NULL)
+            {
+                fprintf(stderr, "Failed allocation.\n");
+                return;
+            }
+
+            current_mesh.indices._[current_mesh.indices.count] =
+                current_mesh.vertices.count - 4;
+            current_mesh.indices._[current_mesh.indices.count + 1] =
+                current_mesh.vertices.count - 3;
+            current_mesh.indices._[current_mesh.indices.count + 2] =
+                current_mesh.vertices.count - 2;
+            current_mesh.indices._[current_mesh.indices.count + 3] =
+                current_mesh.vertices.count - 4;
+            current_mesh.indices._[current_mesh.indices.count + 4] =
+                current_mesh.vertices.count - 2;
+            current_mesh.indices._[current_mesh.indices.count + 5] =
+                current_mesh.vertices.count - 1;
+
+            current_mesh.indices.count += 6;
 
             free(string_left_original);
             break;
@@ -203,7 +287,7 @@ void ProcessWavefrontMesh(leto_model_t *model, char **material_file_path,
     }
 }
 
-void ProcessWavefrontMaterial(const char *path)
+void LetoProcessWavefrontMaterial(const char *path)
 {
     // we upload this to the mesh object, so no need to reference the model
 }

@@ -1,9 +1,16 @@
 #version 460 core
-layout (location = 0) in vec3 vertex_position;
-out vec4 vertex_color;
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normals;
+layout (location = 2) in vec2 texture_coordinates;
+
+out vec2 tc;
+out vec3 pos;
+
+uniform mat4 model, view, projection;
 
 void main()
 {
-    gl_Position = vec4(vertex_position, 1.0);
-    vertex_color = vec4(0.5, 0.0, 0.0, 1.0);
+    tc = texture_coordinates;    
+    pos = position;
+    gl_Position = projection * view * model * vec4(position, 1.0);
 }
