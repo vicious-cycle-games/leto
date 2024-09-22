@@ -7,6 +7,11 @@
 void LetoReadFile(char **buffer, const char *path)
 {
     FILE *opened_file = fopen(path, "rb");
+    if (opened_file == NULL)
+    {
+        fprintf(stderr, "Failed to open file at %s.\n", path);
+        return;
+    }
 
     if (fseek(opened_file, 0L, SEEK_END) == -1)
     {

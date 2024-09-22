@@ -19,3 +19,5 @@ All operating systems that we plan to support in the future are below. Those mar
 Current items are marked with (x).
 
 - Mesh loader (x)
+- Move away from CGLM
+- Standardized error reporter

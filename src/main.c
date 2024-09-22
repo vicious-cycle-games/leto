@@ -3,14 +3,20 @@
 #include <interface/window.h>
 
 //! temp
-#include <external/meshes.h>
+#include <external/models/loading.h>
 
 unsigned int basic_shader;
+unsigned int VAO, VBO;
+leto_model_t *cube = NULL;
 
 bool display_init(uint16_t window_width, uint16_t window_height)
 {
     basic_shader = LetoLoadShader("basic");
     if (basic_shader == 0) return false;
+
+    cube = LetoLoadModel("cube.obj", wavefront);
+    if (cube == NULL) return false;
+    // free(cube);
 
     glViewport(0, 0, window_width, window_height);
     return true;
@@ -28,9 +34,6 @@ void display(size_t argc, void **argv)
 
 int main(void)
 {
-    leto_mesh_t *mesh = LetoLoadMesh("cube", wavefront);
-    if (mesh == NULL) return -1;
-    free(mesh);
 
     leto_window_info_t window_info;
     LetoCreateWindow(&window_info, "Leto");

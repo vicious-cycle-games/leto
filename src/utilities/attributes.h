@@ -21,8 +21,10 @@
 
 #if defined(LETO_LINUX) || defined(LETO_APPLE)
     #define LETO_NORETURN _Noreturn void
+    #define LETO_PACKED __attribute__((__packed__))
 #elif defined(LETO_WINDOWS)
     #define LETO_NORETURN __declspec(noreturn) void
+    #define LETO_PACKED
 #endif
 
 #endif // LETO__ATTRIBUTES__UTILITIES

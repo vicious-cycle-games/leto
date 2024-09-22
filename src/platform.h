@@ -92,7 +92,7 @@
  * changed for every commit to the code base. This rolls back to
  * zero when a new major or minor release is deployed.
  */
-#define LETO_VERSION_TWEAK 6
+#define LETO_VERSION_TWEAK 7
 
 /**
  * @brief A denotion of the current build state. This will be one
