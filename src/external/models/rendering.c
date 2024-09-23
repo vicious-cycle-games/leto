@@ -65,8 +65,8 @@ void LetoRenderModel(leto_model_t *model, unsigned int shader)
         glUseProgram(shader);
 
         mat4 mod = GLM_MAT4_IDENTITY_INIT;
-        // glm_translate(mod, (vec3){0.0f, 0.0f, 0.0f});
-        // glm_rotate(mod, glm_rad(20.0f), (vec3){1.0f, 0.3f, 0.5f});
+        glm_translate(mod, (vec3){0.0f, 0.0f, 0.0f});
+        glm_rotate(mod, glm_rad(20.0f), (vec3){1.0f, 0.3f, 0.5f});
         glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1,
                            GL_FALSE, &mod[0][0]);
 

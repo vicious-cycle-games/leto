@@ -25,7 +25,7 @@ bool display_init(uint16_t window_width, uint16_t window_height)
     // free(cube);
 
     glEnable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glViewport(0, 0, window_width, window_height);
 
     glUseProgram(basic_shader);

@@ -162,9 +162,19 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
                     return;
                 }
 
-                norm[norm_count - 1].x = strtof(line + 3, NULL);
-                norm[norm_count - 1].y = strtof(line + 11, NULL);
-                norm[norm_count - 1].z = strtof(line + 18, NULL);
+                char *string_left = malloc(64),
+                     *string_left_original = string_left;
+                if (string_left == NULL)
+                {
+                    fprintf(stderr, "Failed allocation.\n");
+                    return;
+                }
+                strcpy(string_left, line + 3);
+
+                norm[norm_count - 1].x = strtof(string_left, &string_left);
+                norm[norm_count - 1].y = strtof(string_left, &string_left);
+                norm[norm_count - 1].z = strtof(string_left, &string_left);
+                free(string_left_original);
             }
             else if (line[1] == 't')
             {
@@ -175,8 +185,18 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
                     return;
                 }
 
-                tex[tex_count - 1].x = strtof(line + 2, NULL);
-                tex[tex_count - 1].y = strtof(line + 11, NULL);
+                char *string_left = malloc(64),
+                     *string_left_original = string_left;
+                if (string_left == NULL)
+                {
+                    fprintf(stderr, "Failed allocation.\n");
+                    return;
+                }
+                strcpy(string_left, line + 3);
+
+                tex[tex_count - 1].x = strtof(string_left, &string_left);
+                tex[tex_count - 1].y = strtof(string_left, &string_left);
+                free(string_left_original);
             }
             else
             {
@@ -187,9 +207,19 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
                     return;
                 }
 
-                pos[pos_count - 1].x = strtof(line + 2, NULL);
-                pos[pos_count - 1].y = strtof(line + 11, NULL);
-                pos[pos_count - 1].z = strtof(line + 20, NULL);
+                char *string_left = malloc(64),
+                     *string_left_original = string_left;
+                if (string_left == NULL)
+                {
+                    fprintf(stderr, "Failed allocation.\n");
+                    return;
+                }
+                strcpy(string_left, line + 2);
+
+                pos[pos_count - 1].x = strtof(string_left, &string_left);
+                pos[pos_count - 1].y = strtof(string_left, &string_left);
+                pos[pos_count - 1].z = strtof(string_left, &string_left);
+                free(string_left_original);
             }
             break;
         case 'f':
@@ -228,14 +258,6 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
                     fprintf(stderr, "Failed allocation.\n");
                     return;
                 }
-                // current_mesh.indices._ =
-                //     realloc(current_mesh.indices._,
-                //             4 * (current_mesh.indices.count += 1));
-                // if (current_mesh.indices._ == NULL)
-                // {
-                //     fprintf(stderr, "Failed allocation.\n");
-                //     return;
-                // }
 
                 current_mesh.vertices._[current_mesh.vertices.count - 1]
                     .position = pos[first_set_value - 1];
@@ -245,10 +267,6 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
                 current_mesh.vertices._[current_mesh.vertices.count - 1]
                     .normal =
                     norm[strtol(segment_left + 1, &segment_left, 10) - 1];
-
-                // //!! indices unimplemented
-                // current_mesh.indices._[current_mesh.indices.count - 1] =
-                //     current_mesh.vertices.count - 1;
 
                 string_left = strdup(segment_left);
                 free(segment_left_original);
