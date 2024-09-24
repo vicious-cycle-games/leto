@@ -17,12 +17,13 @@ void LetoUploadWavefrontMesh(leto_model_t *model)
 
     glGenVertexArrays(1, &current_mesh.VAO);
 
-    glGenBuffers(1, &current_mesh.VBO);
-    glGenBuffers(1, &current_mesh.EBO);
+    unsigned int VBO, EBO;
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     glBindVertexArray(current_mesh.VAO);
     // load data into vertex buffers
-    glBindBuffer(GL_ARRAY_BUFFER, current_mesh.VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // A great thing about structs is that their memory layout is
     // sequential for all its items. The effect is that we can simply pass
     // a pointer to the struct and it translates perfectly to a glm::vec3/2
@@ -32,7 +33,7 @@ void LetoUploadWavefrontMesh(leto_model_t *model)
                  current_mesh.vertices.count * sizeof(leto_vertex_t),
                  &current_mesh.vertices._[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, current_mesh.EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                  current_mesh.indices.count * sizeof(uint32_t),
                  &current_mesh.indices._[0], GL_STATIC_DRAW);

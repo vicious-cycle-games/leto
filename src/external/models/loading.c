@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <util.h>
 
 typedef void (*string_processing_function)(leto_model_t *, char **,
                                            const char *);
@@ -65,7 +66,8 @@ static void BinaryFormat_(leto_model_t *model, leto_model_format_t format,
     // Nothing yet.
 }
 
-leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format)
+leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
+                            leto_vec3_t position, float rotation)
 {
     if (path == NULL) return NULL;
 
@@ -96,6 +98,8 @@ leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format)
     }
     created_model->meshes.count = 0;
     created_model->meshes._ = NULL;
+    created_model->position = position;
+    created_model->rotation = glm_rad(rotation);
 
     // Branch off to the different defined functions for the different
     // possible model formats.
@@ -106,7 +110,7 @@ leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format)
         case wavefront:
             StringFormat_(created_model, format, file_contents);
             break;
-        case stl:
+        case fbx:
             BinaryFormat_(created_model, format, (uint8_t *)file_contents);
             break;
         default:

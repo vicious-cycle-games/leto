@@ -23,4 +23,9 @@ typedef struct
     uint32_t x, y, z;
 } leto_ivec3_t;
 
+typedef struct
+{
+    uint8_t r, g, b;
+} leto_rgb_t;
+
 #endif // LETO__VECTORS__UTILITIES

@@ -1,5 +1,6 @@
 #include "shader.h"
 #include "files.h"
+#include <cam.h>
 #include <gl.h>
 #include <malloc.h>
 #include <stdbool.h>
@@ -64,3 +65,15 @@ unsigned int LetoLoadShader(const char *name)
 }
 
 void LetoUnloadShader(unsigned int id) { glDeleteProgram(id); }
+
+void LetoSetProjection(unsigned int id, float fov, float ratio,
+                       float znear, float zfar)
+{
+    glUseProgram(id);
+    mat4 projection = GLM_MAT4_IDENTITY_INIT;
+    glm_perspective(glm_rad(fov), ratio, znear, zfar, projection);
+
+    glUniformMatrix4fv(glGetUniformLocation(id, "projection"), 1, GL_FALSE,
+                       &projection[0][0]);
+    glUseProgram(0);
+}

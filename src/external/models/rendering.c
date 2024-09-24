@@ -1,89 +1,26 @@
 #include "rendering.h"
 #include <affine.h>
 #include <gl.h>
-#include <mat4.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <unistd.h>
 
-// float vertices[] = {
-//     -0.5f, -0.5f, 0.0f, // left
-//     0.5f,  -0.5f, 0.0f, // right
-//     0.0f,  0.5f,  0.0f  // top
-// };
+uint32_t counter = 0;
 
 void LetoRenderModel(leto_model_t *model, unsigned int shader)
 {
-    // unsigned int VBO, VAO;
-    // glGenVertexArrays(1, &VAO);
-    // glGenBuffers(1, &VBO);
-    // // bind the Vertex Array Object first, then bind and set vertex
-    // // buffer(s), and then configure vertex attributes(s).
-    // glBindVertexArray(VAO);
-
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-    //              GL_STATIC_DRAW);
-
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-    //                       (void *)0);
-    // glEnableVertexAttribArray(0);
-
-    // // note that this is allowed, the call to glVertexAttribPointer
-    // // registered VBO as the vertex attribute's bound vertex buffer
-    // object
-    // // so afterwards we can safely unbind
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // // You can unbind the VAO afterwards so other VAO calls won't
-    // // accidentally modify this VAO, but this rarely happens. Modifying
-    // // other VAOs requires a call to glBindVertexArray anyways so we
-    // // generally don't unbind VAOs (nor VBOs) when it's not directly
-    // // necessary.
-    // glBindVertexArray(0);
-
+    glUseProgram(shader);
     for (size_t i = 0; i < model->meshes.count; i++)
     {
-        // for (size_t j = 0; j < model->meshes._[i].vertices.count; j++)
-        // {
-        //     printf("vert[%zu]: pos(%f, %f, %f), norm(%f, %f, %f),
-        //     tex(%f, "
-        //            "%f)\n",
-        //            i, model->meshes._[i].vertices._[j].position.x,
-        //            model->meshes._[i].vertices._[j].position.y,
-        //            model->meshes._[i].vertices._[j].position.z,
-        //            model->meshes._[i].vertices._[j].normal.x,
-        //            model->meshes._[i].vertices._[j].normal.y,
-        //            model->meshes._[i].vertices._[j].normal.z,
-        //            model->meshes._[i].vertices._[j].texture.x,
-        //            model->meshes._[i].vertices._[j].texture.y);
-        // }
-        // for (size_t j = 0; j < model->meshes._[i].indices.count; j++)
-        //     printf("ind[%zu]: %d\n", i,
-        //     model->meshes._[i].indices._[j]);
-
-        glUseProgram(shader);
+        leto_mesh_t *current_mesh = &model->meshes._[i];
 
         mat4 mod = GLM_MAT4_IDENTITY_INIT;
-        glm_translate(mod, (vec3){0.0f, 0.0f, 0.0f});
-        glm_rotate(mod, glm_rad(20.0f), (vec3){1.0f, 0.3f, 0.5f});
+        glm_translate(mod, (vec3){model->position.x, model->position.y,
+                                  model->position.z});
+        glm_rotate(mod, model->rotation, (vec3){1.0f, 0.3f, 0.5f});
         glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1,
                            GL_FALSE, &mod[0][0]);
 
-        glBindVertexArray(model->meshes._[i].VAO);
-        glDrawElements(GL_TRIANGLES, model->meshes._[i].indices.count,
+        glBindVertexArray(current_mesh->VAO);
+        glDrawElements(GL_TRIANGLES, current_mesh->indices.count,
                        GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
-        // glUseProgram(shader);
-        // glBindVertexArray(
-        //     VAO); // seeing as we only have a single VAO there's no
-        //     need to
-        //           // bind it every time, but we'll do so to keep
-        //           things
-        //           a
-        //           // bit more organized
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        // sleep(1);
     }
 }

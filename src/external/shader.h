@@ -18,9 +18,13 @@
 #ifndef LETO__SHADER__EXTERNAL
 #define LETO__SHADER__EXTERNAL
 
+#include <mat4.h>
+
 #define LETO_SHADER_PATH_MAX 256
 
 unsigned int LetoLoadShader(const char *name);
 void LetoUnloadShader(unsigned int id);
+void LetoSetProjection(unsigned int id, float fov, float ratio,
+                       float znear, float zfar);
 
 #endif // LETO__SHADER__EXTERNAL

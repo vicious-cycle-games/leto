@@ -17,6 +17,7 @@
  * @param format The format in which we should interpret the model file's
  * data.
  */
-leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format);
+leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
+                            leto_vec3_t position, float rotation);
 
 #endif // LETO__MODELS__LOADING
