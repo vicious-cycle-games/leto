@@ -246,33 +246,4 @@ typedef struct leto_model_t
     } meshes;
 } leto_model_t;
 
-/**
- * @brief A function specifically for processing a text-based model format
- * line-by-line. The function for binary processing is @ref
- * model_processor_b.
- */
-typedef void (*model_processor_s)(leto_model_t *, char **, const char *);
-
-/**
- * @brief A function specifically for processing a binary-based model
- * format using the entire buffer object. The function for string
- * processing is @ref model_processor_s.
- * @note Not yet implemented.
- */
-typedef void (*model_processor_b)(void);
-
-/**
- * @brief A function specifically for processing a text-based material
- * format line-by-line. The function for binary processing is @ref
- * material_processor_b.
- */
-typedef void (*material_processor_s)(const char *);
-
-/**
- * @brief A function specifically for processing a binary-based material
- * format using the entire buffer object. The function for string
- * processing is @ref material_processor_s.
- */
-typedef void (*material_processor_b)(void);
-
 #endif // LETO__MODELS__STRUCTURE

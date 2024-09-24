@@ -11,7 +11,7 @@
 static bool mesh_filled = false;
 static leto_mesh_t current_mesh;
 
-void LetoUploadWavefrontMesh(leto_model_t *model)
+void LetoWavefrontUploader(leto_model_t *model)
 {
     if (!mesh_filled) return;
 
@@ -132,8 +132,8 @@ void LetoUploadWavefrontMesh(leto_model_t *model)
     current_mesh.VAO = 0;
 }
 
-void LetoProcessWavefrontMesh(leto_model_t *model,
-                              char **material_file_path, const char *line)
+void LetoWavefrontProcessor(leto_model_t *model, char **material_file_path,
+                            const char *line)
 {
     static leto_vec3_t *pos, *norm;
     static leto_vec2_t *tex;
@@ -145,7 +145,7 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
         case 'o':
             // This keyword defines a new mesh object. We simply send the
             // old one to the model and reset the storage object.
-            LetoUploadWavefrontMesh(model);
+            LetoWavefrontUploader(model);
             mesh_filled = true;
             break;
         case 'm':
@@ -306,7 +306,7 @@ void LetoProcessWavefrontMesh(leto_model_t *model,
     }
 }
 
-void LetoProcessWavefrontMaterial(const char *path)
+void LetoMTLProcessor(const char *path)
 {
     // we upload this to the mesh object, so no need to reference the model
 }

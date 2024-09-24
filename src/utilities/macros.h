@@ -22,4 +22,7 @@
 #define LETO_STR_INTERNAL_(x) #x
 #define LETO_STRINGIFY(x) LETO_STR_INTERNAL_(x)
 
+#define DEGREE_TO_RAD(x)                                                  \
+    x * 3.14159265358979323846264338327950288F / 100.0f
+
 #endif // LETO__MACROS__UTILITES
