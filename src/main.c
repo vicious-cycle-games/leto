@@ -38,6 +38,7 @@ bool display_init(uint16_t window_width, uint16_t window_height)
                       (float)window_width / (float)window_height, 0.1f,
                       100.0f);
 
+    glUseProgram(basic_shader);
     glm_translate(view, (vec3){0.0f, 0.0f, -5.0f});
     glUniformMatrix4fv(glGetUniformLocation(basic_shader, "view"), 1,
                        GL_FALSE, &view[0][0]);

@@ -2,8 +2,6 @@
 #include <affine.h>
 #include <gl.h>
 
-uint32_t counter = 0;
-
 void LetoRenderModel(leto_model_t *model, unsigned int shader)
 {
     glUseProgram(shader);
