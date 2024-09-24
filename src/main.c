@@ -71,6 +71,8 @@ int main(void)
 
     if (!LetoRunRenderLoop(&window_info)) return -1;
     LetoUnloadShader(basic_shader);
+    LetoUnloadModel(cube);
+    LetoUnloadModel(cube2);
 
     LetoDestroyWindow(&window_info);
     return 0;

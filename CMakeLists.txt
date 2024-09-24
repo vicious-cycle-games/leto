@@ -158,6 +158,7 @@ file(GLOB PROJECT_SOURCES ${SOURCE_DIRECTORY}/*.c ${SOURCE_DIRECTORY}/*.h
     ${SOURCE_DIRECTORY}/interface/*.c ${SOURCE_DIRECTORY}/interface/*.h
     ${SOURCE_DIRECTORY}/utilities/*.c ${SOURCE_DIRECTORY}/utilities/*.h
     ${SOURCE_DIRECTORY}/utilities/types/*.c ${SOURCE_DIRECTORY}/utilities/types/*.h
+    ${SOURCE_DIRECTORY}/utilities/memory/*.c ${SOURCE_DIRECTORY}/utilities/memory/*.h
     ${SOURCE_DIRECTORY}/external/*.c ${SOURCE_DIRECTORY}/external/*.h
     ${SOURCE_DIRECTORY}/external/models/*.c ${SOURCE_DIRECTORY}/external/models/*.h
     ${SOURCE_DIRECTORY}/external/models/formats/*.c ${SOURCE_DIRECTORY}/external/models/formats/*.h
