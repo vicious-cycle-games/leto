@@ -17,7 +17,7 @@ void LetoRenderModel(leto_model_t *model, unsigned int shader)
                            GL_FALSE, &mod[0][0]);
 
         glBindVertexArray(current_mesh->VAO);
-        glDrawElements(GL_TRIANGLES, current_mesh->indices.count,
+        glDrawElements(GL_TRIANGLES, (int)current_mesh->indices.count,
                        GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }

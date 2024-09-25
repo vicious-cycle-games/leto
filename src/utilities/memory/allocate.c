@@ -1,6 +1,7 @@
 #include "allocate.h"
 #include "free.h"
 #include <malloc.h>
+#include <stdio.h>
 
 void *LetoAllocate(size_t size)
 {

@@ -21,7 +21,7 @@ endif()
 # Default flags (release OR debug) for all the operating systems
 # the project supports. "Linux" flags include MacOS as well.
 set(DEFAULT_FLAGS_LINUX -Wall -Werror -Wpedantic -Wfatal-errors)
-set(DEFAULT_FLAGS_WINDOWS /Wall /WX /wd5045 /wd4820 /wd4996 /wd4710 /wd4711)
+set(DEFAULT_FLAGS_WINDOWS /Wall /WX /wd5045 /wd4820 /wd4996 /wd4710 /wd4711 /wd4464)
 set(LIBRARY_LIST)
 
 set(LIBRARY_FLAGS_LINUX -Wno-pedantic)

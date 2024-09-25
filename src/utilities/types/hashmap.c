@@ -1,5 +1,6 @@
 #include "hashmap.h"
 #include <malloc.h>
+#include <stdio.h>
 
 leto_hashmap_t *LetoCreateHashmap(size_t starting_capacity)
 {
@@ -35,8 +36,16 @@ void LetoDestroyHashmap(leto_hashmap_t *map)
     free(map);
 }
 
-uint64_t LetoHashmapGet(leto_hashmap_t *map, const char *key) { return 0; }
+uint64_t LetoHashmapGet(leto_hashmap_t *map, const char *key)
+{
+    (void)map;
+    (void)key;
+    return 0;
+}
 
 void LetoHashmapSet(leto_hashmap_t *map, const char *key, uint64_t value)
 {
+    (void)map;
+    (void)key;
+    (void)value;
 }

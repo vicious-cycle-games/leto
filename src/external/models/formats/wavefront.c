@@ -3,6 +3,7 @@
 #include <gl.h>
 #include <malloc.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -284,17 +285,17 @@ void LetoWavefrontProcessor(leto_model_t *model, char **material_file_path,
             }
 
             current_mesh.indices._[current_mesh.indices.count] =
-                current_mesh.vertices.count - 4;
+                (uint32_t)current_mesh.vertices.count - 4;
             current_mesh.indices._[current_mesh.indices.count + 1] =
-                current_mesh.vertices.count - 3;
+                (uint32_t)current_mesh.vertices.count - 3;
             current_mesh.indices._[current_mesh.indices.count + 2] =
-                current_mesh.vertices.count - 2;
+                (uint32_t)current_mesh.vertices.count - 2;
             current_mesh.indices._[current_mesh.indices.count + 3] =
-                current_mesh.vertices.count - 4;
+                (uint32_t)current_mesh.vertices.count - 4;
             current_mesh.indices._[current_mesh.indices.count + 4] =
-                current_mesh.vertices.count - 2;
+                (uint32_t)current_mesh.vertices.count - 2;
             current_mesh.indices._[current_mesh.indices.count + 5] =
-                current_mesh.vertices.count - 1;
+                (uint32_t)current_mesh.vertices.count - 1;
 
             current_mesh.indices.count += 6;
 
@@ -308,5 +309,6 @@ void LetoWavefrontProcessor(leto_model_t *model, char **material_file_path,
 
 void LetoMTLProcessor(const char *path)
 {
+    (void)path;
     // we upload this to the mesh object, so no need to reference the model
 }
