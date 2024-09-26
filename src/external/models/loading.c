@@ -55,20 +55,24 @@ leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
         // binary and string-based model formats, so split that here.
         case wavefront:
         {
-            // For formats with material files separate, like Wavefront
-            // Object files, we store the string file path in this value.
-            char *material_path = LetoAllocate(LETO_FILE_PATH_MAX);
-            strcpy(material_path, "none");
+            // char *material_path = LetoAllocate(LETO_FILE_PATH_MAX);
+            // strcpy(material_path, "none");
 
-            char *line = strtok(file_contents, "\n");
-            do LetoWavefrontProcessor(created_model, &material_path, line);
-            while (((line = strtok(NULL, "\n")) != NULL));
+            // char *line = strtok(file_contents, "\n");
+            // do LetoWavefrontProcessor(created_model, &material_path,
+            // line); while (((line = strtok(NULL, "\n")) != NULL));
 
-            if (strcmp(material_path, "none") != 0)
-                LetoMTLProcessor(material_path);
-            LetoWavefrontUploader(created_model);
-            LetoFree((void **)&material_path);
+            // if (strcmp(material_path, "none") != 0)
+            //     LetoMTLProcessor(material_path);
+            // LetoUploadWavefront(created_model); // trailing mesh
+            // LetoFree((void **)&material_path);
 
+            LetoWavefrontProcessor(created_model, file_contents);
+            if (created_model->meshes._ == NULL)
+            {
+                LetoFree((void **)&created_model);
+                return NULL;
+            }
             break;
         }
         case fbx:
