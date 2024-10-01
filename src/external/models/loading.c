@@ -17,8 +17,9 @@
 
 #include "loading.h" // Public interface parent
 
-#include "formats/fbx.h"       // FBX format
-#include "formats/wavefront.h" // Wavefront format
+#include <cimport.h>
+#include <postprocess.h>
+#include <scene.h>
 
 #include <external/files.h>            // Leto file utilities
 #include <utilities/macros.h>          // Degrees to radians
@@ -42,10 +43,7 @@ leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
     if (file_contents == NULL) return NULL;
     LetoFree((void **)&full_path); // The path value is no longer needed.
 
-    leto_model_t *created_model = LetoAllocateEmpty(sizeof(leto_model_t));
-    created_model->name = strdup(path);
-    created_model->position = position;
-    created_model->rotation = DEGREE_TO_RAD(rotation);
+    leto_model_t *created_model = NULL;
 
     // Branch off to the different defined functions for the different
     // possible model formats.
@@ -55,24 +53,8 @@ leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
         // binary and string-based model formats, so split that here.
         case wavefront:
         {
-            // char *material_path = LetoAllocate(LETO_FILE_PATH_MAX);
-            // strcpy(material_path, "none");
-
-            // char *line = strtok(file_contents, "\n");
-            // do LetoWavefrontProcessor(created_model, &material_path,
-            // line); while (((line = strtok(NULL, "\n")) != NULL));
-
-            // if (strcmp(material_path, "none") != 0)
-            //     LetoMTLProcessor(material_path);
-            // LetoUploadWavefront(created_model); // trailing mesh
-            // LetoFree((void **)&material_path);
-
-            LetoWavefrontProcessor(created_model, file_contents);
-            if (created_model->meshes._ == NULL)
-            {
-                LetoFree((void **)&created_model);
-                return NULL;
-            }
+            created_model = LetoWavefrontProcessor(file_contents);
+            if (created_model == NULL) return NULL;
             break;
         }
         case fbx:
@@ -81,6 +63,11 @@ leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
             break;
         default: fprintf(stderr, "Unrecognized model type.\n"); break;
     }
+
+    created_model->name = strdup(path);
+    created_model->position = position;
+    created_model->rotation = DEGREE_TO_RAD(rotation);
+
     LetoFree((void **)&file_contents);
     return created_model;
 }

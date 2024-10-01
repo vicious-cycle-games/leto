@@ -36,12 +36,14 @@ if(LINUX OR APPLE)
     set(C_LINKER_FLAGS -fsanitize=undefined)
 
     if(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "x86_64")
-        list(APPEND LIBRARY_LIST glfw3-linux-64 glad2-linux-64 cglm-linux-64 m)
+        list(APPEND LIBRARY_LIST glfw3-linux-64 glad2-linux-64 cglm-linux-64 
+            assimp-linux-64 m)
     elseif(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "i386")
-        list(APPEND LIBRARY_LIST glfw3-linux-32 glad2-linux-32 cglm-linux-32 m)
+        list(APPEND LIBRARY_LIST glfw3-linux-32 glad2-linux-32 cglm-linux-32 
+            assimp-linux-32 m)
     else()
         list(APPEND LIBRARY_LIST glfw3-linux-arm glad2-linux-arm 
-            cglm-linux-arm m)
+            cglm-linux-arm assimp-linux-arm m)
     endif()
 
     # If we're running on Linux, we've gotta figure out what
@@ -119,7 +121,7 @@ message(STATUS "Using the ${CMAKE_C_COMPILER_ID} compiler.\n  "
 # commands and flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
-    add_compile_definitions(BUILD_TYPE=0)
+    add_compile_definitions(LETO_DEBUG)
     add_compile_options(${C_FLAGS_DEBUG})
     add_link_options(${C_LINKER_FLAGS})
 else()
@@ -132,12 +134,13 @@ endif()
 set(GLFW_PATH "${INCLUDE_DIRECTORY}/glfw")
 set(GLAD_PATH "${INCLUDE_DIRECTORY}/glad2")
 set(CGLM_PATH "${INCLUDE_DIRECTORY}/cglm")
+set(ASMP_PATH "${INCLUDE_DIRECTORY}/asmp")
 
 # Include the respective "inc" directories of each one of our dependencies,
 # and the source directory of the project. Also specify the link directory,
 # which will tell our program where to look first to link libraries.
 include_directories("${GLFW_PATH}" "${GLAD_PATH}" "${CGLM_PATH}" 
-    "${SOURCE_DIRECTORY}")
+    "${ASMP_PATH}" "${SOURCE_DIRECTORY}")
 link_directories("${LIB_DIRECTORY}")
 # Print out these set directories.
 message(STATUS "Library Info:\n\tLink Directory: ${CMAKE_BINARY_DIR}\n"
@@ -156,6 +159,7 @@ message(STATUS ${ASSET_DIR})
 message(STATUS "${PROJECT_NAME} source files:")
 file(GLOB PROJECT_SOURCES ${SOURCE_DIRECTORY}/*.c ${SOURCE_DIRECTORY}/*.h
     ${SOURCE_DIRECTORY}/interface/*.c ${SOURCE_DIRECTORY}/interface/*.h
+    ${SOURCE_DIRECTORY}/output/*.c ${SOURCE_DIRECTORY}/output/*.h
     ${SOURCE_DIRECTORY}/utilities/*.c ${SOURCE_DIRECTORY}/utilities/*.h
     ${SOURCE_DIRECTORY}/utilities/types/*.c ${SOURCE_DIRECTORY}/utilities/types/*.h
     ${SOURCE_DIRECTORY}/utilities/memory/*.c ${SOURCE_DIRECTORY}/utilities/memory/*.h

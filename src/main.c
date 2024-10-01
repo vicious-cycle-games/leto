@@ -21,17 +21,17 @@ bool display_init(uint16_t window_width, uint16_t window_height)
     if (basic_shader == 0) return false;
 
     cube = LetoLoadModel("cube.obj", wavefront,
-                         (leto_vec3_t){1.5f, 0.0f, 0.0f}, 0.0f);
+                         (leto_vec3_t){0.0f, 0.0f, 0.0f}, 0.0f);
     if (cube == NULL) return false;
-    cube2 = LetoLoadModel("cube.obj", wavefront,
-                          (leto_vec3_t){-1.5f, 0.0f, 0.0f}, 0.0f);
-    if (cube2 == NULL) return false;
+    // cube2 = LetoLoadModel("cube.obj", wavefront,
+    //                       (leto_vec3_t){-1.5f, 0.0f, 0.0f}, 0.0f);
+    // if (cube2 == NULL) return false;
     // free(cube);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glViewport(0, 0, window_width, window_height);
 
     LetoSetProjection(basic_shader, 45.0f,
@@ -55,7 +55,7 @@ void display(size_t argc, void **argv)
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     LetoRenderModel(cube, basic_shader);
-    LetoRenderModel(cube2, basic_shader);
+    // LetoRenderModel(cube2, basic_shader);
 
     LetoSwapWindowBuffers();
 }
