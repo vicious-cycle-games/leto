@@ -30,45 +30,133 @@
 #include <stdio.h>  // Standard I/O functionality
 #include <string.h> // Standard string manipulations
 
-leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
-                            leto_vec3_t position, float rotation)
+leto_mesh_t ProcessMesh_(const struct aiScene *scene, struct aiMesh *mesh)
+{
+    leto_mesh_t created_mesh = {
+        {LetoAllocate(mesh->mNumVertices), mesh->mNumVertices},
+        {NULL, 0},
+        {NULL, 0}};
+
+    // walk through each of the mesh's vertices
+    for (size_t i = 0; i < mesh->mNumVertices; i++)
+    {
+        leto_vertex_t *current_vertex = &created_mesh.vertices._[i];
+        current_vertex->position = *(leto_vec3_t *)(&mesh->mVertices[i]);
+        current_vertex->normal = *(leto_vec3_t *)(&mesh->mNormals[i]);
+        current_vertex->tangent = *(leto_vec3_t *)(&mesh->mTangents[i]);
+        current_vertex->bitangent =
+            *(leto_vec3_t *)(&mesh->mBitangents[i]);
+        // a vertex can contain up to 8 different texture coordinates.
+        // We thus make the assumption that we won't use models where a
+        // vertex can have multiple texture coordinates so we always
+        // take the first set (0).
+        current_vertex->texture =
+            *(leto_vec2_t *)(&mesh->mTextureCoords[0][i]);
+    }
+
+    // now wak through each of the mesh's faces (a face is a mesh its
+    // triangle) and retrieve the corresponding vertex indices.
+    for (size_t i = 0; i < mesh->mNumFaces; i++)
+    {
+        struct aiFace face = mesh->mFaces[i];
+        created_mesh.indices._ = LetoReallocate(
+            created_mesh.indices._,
+            4 * (created_mesh.indices.count += face.mNumIndices));
+
+        for (size_t j = 0; j < face.mNumIndices; j++)
+            created_mesh.indices
+                ._[created_mesh.indices.count - (face.mNumIndices - j)] =
+                face.mIndices[j];
+    }
+
+    // process materials
+    // struct aiMaterial *material =
+    // scene->mMaterials[mesh->mMaterialIndex];
+    // // we assume a convention for sampler names in the shaders. Each
+    // // diffuse texture should be named as 'texture_diffuseN' where N is
+    // a
+    // // sequential number ranging from 1 to MAX_SAMPLER_NUMBER. Same
+    // applies
+    // // to other texture as the following list summarizes: diffuse:
+    // // texture_diffuseN specular: texture_specularN normal:
+    // texture_normalN
+
+    // // 1. diffuse maps
+    // vector<Texture> diffuseMaps = loadMaterialTextures(
+    //     material, aiTextureType_DIFFUSE, "texture_diffuse");
+    // textures.insert(textures.end(), diffuseMaps.begin(),
+    //                 diffuseMaps.end());
+    // // 2. specular maps
+    // vector<Texture> specularMaps = loadMaterialTextures(
+    //     material, aiTextureType_SPECULAR, "texture_specular");
+    // textures.insert(textures.end(), specularMaps.begin(),
+    //                 specularMaps.end());
+    // // 3. normal maps
+    // std::vector<Texture> normalMaps = loadMaterialTextures(
+    //     material, aiTextureType_HEIGHT, "texture_normal");
+    // textures.insert(textures.end(), normalMaps.begin(),
+    // normalMaps.end());
+    // // 4. height maps
+    // std::vector<Texture> heightMaps = loadMaterialTextures(
+    //     material, aiTextureType_AMBIENT, "texture_height");
+    // textures.insert(textures.end(), heightMaps.begin(),
+    // heightMaps.end());
+
+    return created_mesh;
+}
+
+void ASSIMPProcessNode_(leto_model_t *model, const struct aiScene *scene,
+                        struct aiNode *node)
+{
+    for (size_t i = 0; i < node->mNumMeshes; i++)
+    {
+        // the node object only contains indices to index the actual
+        // objects in the scene. the scene contains all the data, node is
+        // just to keep stuff organized (like relations between nodes).
+        struct aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+
+        model->meshes._ = LetoReallocate(model->meshes._,
+                                         sizeof(leto_mesh_t) *
+                                             (model->meshes.count += 1));
+        if (model->meshes._ == NULL) return;
+        model->meshes._[model->meshes.count - 1] =
+            ProcessMesh_(scene, mesh);
+    }
+    // after we've processed all of the meshes (if any) we then recursively
+    // process each of the children nodes
+    for (size_t i = 0; i < node->mNumChildren; i++)
+        ASSIMPProcessNode_(model, scene, node->mChildren[i]);
+}
+
+void ASSIMPLoad_(const char *path, leto_model_t *model)
+{
+    const struct aiScene *scene = aiImportFile(
+        path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
+                  aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    if (scene == NULL)
+    {
+        fprintf(stderr, "Failed to load model: %s\n", aiGetErrorString());
+        return;
+    }
+
+    ASSIMPProcessNode_(model, scene, scene->mRootNode);
+}
+
+leto_model_t *LetoLoadModel(const char *path, leto_vec3_t position,
+                            float rotation)
 {
     if (path == NULL) return NULL;
 
     char *full_path = LetoAllocate(LETO_FILE_PATH_MAX);
     sprintf(full_path, ASSET_DIR "/models/%s", path);
 
-    char *file_contents = NULL;
-    LetoReadFile(&file_contents, full_path);
-    if (file_contents == NULL) return NULL;
-    LetoFree((void **)&full_path); // The path value is no longer needed.
-
-    leto_model_t *created_model = NULL;
-
-    // Branch off to the different defined functions for the different
-    // possible model formats.
-    switch (format)
-    {
-        // The way we process the underlying array of bytes changes between
-        // binary and string-based model formats, so split that here.
-        case wavefront:
-        {
-            created_model = LetoWavefrontProcessor(file_contents);
-            if (created_model == NULL) return NULL;
-            break;
-        }
-        case fbx:
-            // Unimplemented.
-            LetoFBXProcessor(created_model, (uint8_t *)file_contents);
-            break;
-        default: fprintf(stderr, "Unrecognized model type.\n"); break;
-    }
+    leto_model_t *created_model = LetoAllocate(sizeof(leto_model_t));
+    ASSIMPLoad_(full_path, created_model);
 
     created_model->name = strdup(path);
     created_model->position = position;
     created_model->rotation = DEGREE_TO_RAD(rotation);
 
-    LetoFree((void **)&file_contents);
     return created_model;
 }
 

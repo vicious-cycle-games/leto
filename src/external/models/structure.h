@@ -25,28 +25,6 @@
 #include <utilities/vectors.h>
 
 /**
- * @brief A list of supported model formats. Only those models specified in
- * this list can be loaded by the program, anything else will throw errors.
- */
-typedef enum leto_model_format_t
-{
-    /**
-     * @brief Wavefront Object file, a text-based list-style 3D model
-     * format that we use for prototyping within Leto. They're simple to
-     * import and work with, although not as optimized for our use case as
-     * some of the other formats, like FBX.
-     */
-    wavefront,
-    /**
-     * @brief Filmbox format, a format created originally for filmmaking in
-     * 2005 and nowadays maintained by Autodesk. It is very useful for 3D
-     * rendering, and is the format we use for final-edition models.
-     * @note Not yet implemented.
-     */
-    fbx
-} leto_model_format_t;
-
-/**
  * @brief A standardized material object, containing all the details we
  * need from the material formats of both OBJ and FBX files.
  */
@@ -126,8 +104,18 @@ typedef struct leto_vertex_t
      */
     leto_vec3_t normal;
     /**
-     * @brief The UV coordinates of the vector, stored as (X,Y) because we
-     * assume no textures are being used that exceed two dimensions.
+     * @brief A directional vector used in coupling with the @ref bitangent
+     * vector to create subsurface lighting.
+     */
+    leto_vec3_t tangent;
+    /**
+     * @brief A directional vector used in coupling with the @ref tangent
+     * vector to create subsurface lighting.
+     */
+    leto_vec3_t bitangent;
+    /**
+     * @brief The UV coordinates of the vector, stored as (X,Y) because
+     * we assume no textures are being used that exceed two dimensions.
      */
     leto_vec2_t texture;
 } leto_vertex_t;

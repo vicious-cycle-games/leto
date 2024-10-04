@@ -33,15 +33,13 @@
  *
  * @param path The file path of the model within the @dir rss/models
  * directory. If this value is NULL, this function will return NULL.
- * @param format The format in which we should interpret the model file's
- * data.
  * @param position A 3-dimensional array of floats that specifies the
  * global position of the mesh. This is in relation to (0,0) universal.
  * @param rotation The rotation, in degrees, that the model should be
  * globally rotated at. This value is converted to radians internally.
  */
-leto_model_t *LetoLoadModel(const char *path, leto_model_format_t format,
-                            leto_vec3_t position, float rotation);
+leto_model_t *LetoLoadModel(const char *path, leto_vec3_t position,
+                            float rotation);
 
 /**
  * @brief Unload a previously loaded model, and all of its subcontexts.
