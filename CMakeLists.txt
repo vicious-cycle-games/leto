@@ -5,7 +5,7 @@ project("Leto" DESCRIPTION "Leto is an open-world driving game." LANGUAGES C)
 message(STATUS "Attempting to build a ${CMAKE_BUILD_TYPE} version of ${PROJECT_NAME}.")
 
 # Make sure CMake knows where to find any modules we may have declared.
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/inc)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Include)
 
 # Make sure we're running on a supported CPU architecture.
 include(TargetArchitecture)
@@ -36,14 +36,12 @@ if(LINUX OR APPLE)
     set(C_LINKER_FLAGS -fsanitize=undefined)
 
     if(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "x86_64")
-        list(APPEND LIBRARY_LIST glfw3-linux-64 glad2-linux-64 cglm-linux-64 
-            assimp-linux-64 m)
+        list(APPEND LIBRARY_LIST glfw3-linux-64 glad2-linux-64 cglm-linux-64 m)
     elseif(${CMAKE_TARGET_ARCHITECTURES} STREQUAL "i386")
-        list(APPEND LIBRARY_LIST glfw3-linux-32 glad2-linux-32 cglm-linux-32 
-            assimp-linux-32 m)
+        list(APPEND LIBRARY_LIST glfw3-linux-32 glad2-linux-32 cglm-linux-32 m)
     else()
         list(APPEND LIBRARY_LIST glfw3-linux-arm glad2-linux-arm 
-            cglm-linux-arm assimp-linux-arm m)
+            cglm-linux-arm m)
     endif()
 
     # If we're running on Linux, we've gotta figure out what
@@ -98,10 +96,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 # Project directory macros, so we can access them easier.
-set(INCLUDE_DIRECTORY "${CMAKE_SOURCE_DIR}/inc")
-set(LIB_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
-set(SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src")
-set(RESOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/rss")
+set(INCLUDE_DIRECTORY "${CMAKE_SOURCE_DIR}/Include")
+set(LIB_DIRECTORY "${CMAKE_SOURCE_DIR}/Libraries")
+set(SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/Source")
+set(RESOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/Resources")
 
 # Print out each of these directories for the user's amusement.
 message(STATUS "Build directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\n"
@@ -125,22 +123,19 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(${C_FLAGS_DEBUG})
     add_link_options(${C_LINKER_FLAGS})
 else()
-    add_compile_definitions(BUILD_TYPE=1)
     add_compile_options(${C_FLAGS_RELEASE})
 endif()
 
 # Set some path macros to represent the different libraries we're
 # pulling into the project build.
-set(GLFW_PATH "${INCLUDE_DIRECTORY}/glfw")
-set(GLAD_PATH "${INCLUDE_DIRECTORY}/glad2")
-set(CGLM_PATH "${INCLUDE_DIRECTORY}/cglm")
-set(ASMP_PATH "${INCLUDE_DIRECTORY}/asmp")
+set(GLFW_PATH "${INCLUDE_DIRECTORY}/GLFW")
+set(GLAD_PATH "${INCLUDE_DIRECTORY}/GLAD2")
+set(CGLM_PATH "${INCLUDE_DIRECTORY}/CGLM")
 
 # Include the respective "inc" directories of each one of our dependencies,
 # and the source directory of the project. Also specify the link directory,
 # which will tell our program where to look first to link libraries.
-include_directories("${GLFW_PATH}" "${GLAD_PATH}" "${CGLM_PATH}" 
-    "${ASMP_PATH}" "${SOURCE_DIRECTORY}")
+include_directories("${INCLUDE_DIRECTORY}" "${SOURCE_DIRECTORY}")
 link_directories("${LIB_DIRECTORY}")
 # Print out these set directories.
 message(STATUS "Library Info:\n\tLink Directory: ${CMAKE_BINARY_DIR}\n"
@@ -158,14 +153,10 @@ message(STATUS ${ASSET_DIR})
 # Define and list the source files within the project.
 message(STATUS "${PROJECT_NAME} source files:")
 file(GLOB PROJECT_SOURCES ${SOURCE_DIRECTORY}/*.c ${SOURCE_DIRECTORY}/*.h
-    ${SOURCE_DIRECTORY}/interface/*.c ${SOURCE_DIRECTORY}/interface/*.h
-    ${SOURCE_DIRECTORY}/output/*.c ${SOURCE_DIRECTORY}/output/*.h
-    ${SOURCE_DIRECTORY}/utilities/*.c ${SOURCE_DIRECTORY}/utilities/*.h
-    ${SOURCE_DIRECTORY}/utilities/types/*.c ${SOURCE_DIRECTORY}/utilities/types/*.h
-    ${SOURCE_DIRECTORY}/utilities/memory/*.c ${SOURCE_DIRECTORY}/utilities/memory/*.h
-    ${SOURCE_DIRECTORY}/external/*.c ${SOURCE_DIRECTORY}/external/*.h
-    ${SOURCE_DIRECTORY}/external/models/*.c ${SOURCE_DIRECTORY}/external/models/*.h
-    ${SOURCE_DIRECTORY}/external/models/formats/*.c ${SOURCE_DIRECTORY}/external/models/formats/*.h
+    ${SOURCE_DIRECTORY}/Diagnostic/*.c ${SOURCE_DIRECTORY}/Diagnostic/*.h
+    ${SOURCE_DIRECTORY}/Initialization/*.c ${SOURCE_DIRECTORY}/Initialization/*.h
+    ${SOURCE_DIRECTORY}/Output/*.c ${SOURCE_DIRECTORY}/Output/*.h
+    ${SOURCE_DIRECTORY}/Utilities/*.c ${SOURCE_DIRECTORY}/Utilities/*.h
 )
 # Define the filename of each file without its basename.
 foreach(file ${PROJECT_SOURCES})

@@ -16,5 +16,4 @@ All operating systems that we plan to support in the future are below. Those mar
 Current items are marked with (x).
 
 - Mesh loader (x)
-- Standardized error reporter
 - Make the engine more reliable (finite loop caps, etc.)
