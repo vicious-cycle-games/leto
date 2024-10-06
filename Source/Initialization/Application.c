@@ -26,13 +26,13 @@ leto_application_t *LetoInitApplication(leto_boolean_t paused,
 
     application->window = CreateWindow("Leto | v" LETO_VERSION_STRING);
     if (application->window == NULL) return NULL;
+    glfwSetWindowUserPointer(application->window, application);
 
     int glad_initialized = gladLoadGL(glfwGetProcAddress);
     if (glad_initialized == 0)
         LetoReportError(leto_true_t, failed_glad_init, LETO_FILE_CONTEXT);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    application->camera = LetoCreateCamera(45.0f);
 
     initialized = leto_true_t;
     return application;
@@ -57,46 +57,57 @@ leto_boolean_t LetoRunApplication(leto_application_t *application)
 
     // The initialization function is optional but the actual display
     // function is mandatory.
-    if (application->display_init_function != NULL)
-        application->display_init_function(width, height);
+    if (application->display_functions.init != NULL &&
+        application->display_functions.init(
+            width, height, application->display_functions.init_ptr) ==
+            leto_false_t)
+        return leto_false_t;
 
-    if (application->display_function == NULL)
+    if (application->display_functions.run == NULL)
     {
         LetoReportError(leto_false_t, no_display_func, LETO_FILE_CONTEXT);
         return leto_false_t;
     }
 
+    static float last_frame = 0.0f;
     while (!glfwWindowShouldClose(application->window))
     {
-        application->display_function(width, height);
+        float current_frame = (float)glfwGetTime();
+        application->deltatime = current_frame - last_frame;
+        last_frame = current_frame;
+
+        application->display_functions.run(
+            width, height, application->display_functions.run_ptr);
 
         glfwPollEvents();
         glfwSwapBuffers(application->window);
     }
 
-    if (application->display_kill_function != NULL)
-        application->display_kill_function();
+    if (application->display_functions.kill != NULL)
+        application->display_functions.kill();
 
     return leto_true_t;
 }
 
 void LetoBindDisplayInitFunc(leto_application_t *application,
-                             display_init_func_t func)
+                             display_init_func_t func, void *ptr)
 {
     if (application == NULL) return;
-    application->display_init_function = func;
+    application->display_functions.init = func;
+    application->display_functions.init_ptr = ptr;
 }
 
 void LetoBindDisplayKillFunc(leto_application_t *application,
                              display_kill_func_t func)
 {
     if (application == NULL) return;
-    application->display_kill_function = func;
+    application->display_functions.kill = func;
 }
 
 void LetoBindDisplayFunc(leto_application_t *application,
-                         display_run_func_t func)
+                         display_run_func_t func, void *ptr)
 {
     if (application == NULL) return;
-    application->display_function = func;
+    application->display_functions.run = func;
+    application->display_functions.run_ptr = ptr;
 }

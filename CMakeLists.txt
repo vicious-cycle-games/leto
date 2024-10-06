@@ -152,6 +152,7 @@ file(GLOB PROJECT_SOURCES ${SOURCE_DIRECTORY}/*.c ${SOURCE_DIRECTORY}/*.h
     ${SOURCE_DIRECTORY}/Initialization/*.c ${SOURCE_DIRECTORY}/Initialization/*.h
     ${SOURCE_DIRECTORY}/Output/*.c ${SOURCE_DIRECTORY}/Output/*.h 
     ${SOURCE_DIRECTORY}/Input/*.c ${SOURCE_DIRECTORY}/Input/*.h 
+    ${SOURCE_DIRECTORY}/Rendering/*.c ${SOURCE_DIRECTORY}/Rendering/*.h 
     ${SOURCE_DIRECTORY}/Utilities/*.c ${SOURCE_DIRECTORY}/Utilities/*.h
 )
 # Define the filename of each file without its basename.

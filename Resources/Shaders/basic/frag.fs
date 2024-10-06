@@ -1,7 +1,7 @@
 #version 460 core
 layout(location = 0) out vec4 fragmentColor;
 
-in vec2 tc;
+// in vec2 tc;
 in vec3 pos;
 
 // uniform sampler2D texture_diffuse1;

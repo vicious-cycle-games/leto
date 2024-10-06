@@ -147,7 +147,6 @@ void LetoSetProjection(unsigned int id, float fov, float ratio,
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
     glm_perspective(glm_rad(fov), ratio, znear, zfar, projection);
 
-    glUniformMatrix4fv(glGetUniformLocation(id, "projection"), 1, GL_FALSE,
-                       &projection[0][0]);
-    glUseProgram(0);
+    glUniformMatrix4fv(glGetUniformLocation(id, "projection_matrix"), 1,
+                       GL_FALSE, &projection[0][0]);
 }
