@@ -6,6 +6,48 @@
 
 static leto_boolean_t initialized = leto_false_t;
 
+static leto_boolean_t first_mouse = leto_true_t;
+
+static void MouseCallback_(GLFWwindow *window, double x, double y)
+{
+    leto_application_t *application =
+        (leto_application_t *)glfwGetWindowUserPointer(window);
+
+    if (first_mouse == leto_true_t)
+    {
+        application->camera->last_x = (float)x;
+        application->camera->last_y = (float)y;
+        first_mouse = leto_false_t;
+    }
+
+    LetoMoveCameraOrientation(application->camera, (float)x, (float)y);
+}
+
+static void ProcessKeyboard_(GLFWwindow *window)
+{
+    leto_application_t *application =
+        (leto_application_t *)glfwGetWindowUserPointer(window);
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera, application->deltatime,
+                               forward);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera, application->deltatime,
+                               backwards);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera, application->deltatime,
+                               left);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera, application->deltatime,
+                               right);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera, application->deltatime,
+                               up);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera, application->deltatime,
+                               down);
+}
+
 leto_application_t *LetoInitApplication(leto_boolean_t paused,
                                         leto_boolean_t muted)
 {
@@ -26,13 +68,16 @@ leto_application_t *LetoInitApplication(leto_boolean_t paused,
 
     application->window = CreateWindow("Leto | v" LETO_VERSION_STRING);
     if (application->window == NULL) return NULL;
+    glfwSetInputMode(application->window, GLFW_CURSOR,
+                     GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(application->window, application);
+    glfwSetCursorPosCallback(application->window, MouseCallback_);
 
     int glad_initialized = gladLoadGL(glfwGetProcAddress);
     if (glad_initialized == 0)
         LetoReportError(leto_true_t, failed_glad_init, LETO_FILE_CONTEXT);
 
-    application->camera = LetoCreateCamera(45.0f);
+    application->camera = LetoCreateCamera(45.0f, 2.5f, 0.1f);
 
     initialized = leto_true_t;
     return application;
@@ -69,12 +114,14 @@ leto_boolean_t LetoRunApplication(leto_application_t *application)
         return leto_false_t;
     }
 
-    static float last_frame = 0.0f;
+    float last_frame = 0.0f;
     while (!glfwWindowShouldClose(application->window))
     {
         float current_frame = (float)glfwGetTime();
         application->deltatime = current_frame - last_frame;
         last_frame = current_frame;
+
+        ProcessKeyboard_(application->window);
 
         application->display_functions.run(
             width, height, application->display_functions.run_ptr);
