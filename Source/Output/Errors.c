@@ -1,8 +1,10 @@
 #include "Errors.h"
 #include <GLAD2/gl.h>
 #include <GLFW/glfw3.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static leto_error_t errid = no_error;
 
@@ -15,11 +17,13 @@ typedef struct leto_error_context
 
 #define LETO_GLFW_DOMAIN 0xD1
 #define LETO_GLAD_DOMAIN 0xD2
-#define LETO_LETO_DOMAIN 0xD3
+#define LETO_STDC_DOMAIN 0xD3
+#define LETO_LETO_DOMAIN 0xD4
 
 static leto_error_context_t error_contexts[error_count] = {
     {"no_error", "no error", LETO_LETO_DOMAIN},
     {"failed_allocation", "failed to allocate memory", LETO_LETO_DOMAIN},
+    {"failed_file_open", "failed to open file", LETO_STDC_DOMAIN},
     {"failed_glfw_init", "failed to init GLFW", LETO_GLFW_DOMAIN},
     {"failed_glad_init", "failed to init GLAD", LETO_GLAD_DOMAIN},
     {"failed_monitor_get", "failed to get monitor", LETO_GLFW_DOMAIN},
@@ -59,6 +63,7 @@ static const char *GetAdditionalContext_(uint8_t domain)
     {
         case LETO_GLFW_DOMAIN: return GLFWErrorString_();
         case LETO_GLAD_DOMAIN: return OpenGLErrorString_();
+        case LETO_STDC_DOMAIN: return strerror(errno);
         case LETO_LETO_DOMAIN: return "none";
         default:
             fprintf(stderr, "Failed to find valid error domain: \"%x\".\n",

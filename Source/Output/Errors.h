@@ -7,6 +7,7 @@ typedef enum leto_error
 {
     no_error,
     failed_allocation,
+    failed_file_open,
     failed_glfw_init,
     failed_glad_init,
     failed_monitor_get,

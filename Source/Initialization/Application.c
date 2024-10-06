@@ -86,6 +86,7 @@ void LetoBindDisplayInitFunc(leto_application_t *application,
     if (application == NULL) return;
     application->display_init_function = func;
 }
+
 void LetoBindDisplayFunc(leto_application_t *application,
                          display_run_func_t func)
 {
