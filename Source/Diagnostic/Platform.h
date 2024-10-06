@@ -33,14 +33,6 @@
     #else
         #error "Unsupported display server."
     #endif
-#elif defined(__APPLE__)
-    #include <TargetConditionals.h>
-    #if defined(TARGET_OS_MAX)
-        #define LETO_APPLE
-        #define LETO_PLATFORM "apple"
-    #else
-        #error "Unsupported Apple system."
-    #endif
 #else
     #error "Unsupported operating system."
 #endif

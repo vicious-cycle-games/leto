@@ -19,9 +19,6 @@ leto_application_t *LetoInitApplication(leto_boolean_t paused,
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#if defined(LETO_APPLE)
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-#endif
 
     int glfw_initialized = glfwInit();
     if (glfw_initialized == GLFW_FALSE)
