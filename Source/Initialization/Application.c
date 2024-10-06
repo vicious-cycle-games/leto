@@ -55,14 +55,40 @@ leto_boolean_t LetoRunApplication(leto_application_t *application)
     if (initialized != leto_true_t || application == NULL)
         return leto_false_t;
 
+    int width, height;
+    glfwGetWindowSize(application->window, &width, &height);
+
+    // The initialization function is optional but the actual display
+    // function is mandatory.
+    if (application->display_init_function != NULL)
+        application->display_init_function(width, height);
+
+    if (application->display_function == NULL)
+    {
+        LetoReportError(leto_false_t, no_display_func, LETO_FILE_CONTEXT);
+        return leto_false_t;
+    }
+
     while (!glfwWindowShouldClose(application->window))
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        application->display_function(width, height);
 
         glfwPollEvents();
         glfwSwapBuffers(application->window);
     }
 
     return leto_true_t;
+}
+
+void LetoBindDisplayInitFunc(leto_application_t *application,
+                             display_init_func_t func)
+{
+    if (application == NULL) return;
+    application->display_init_function = func;
+}
+void LetoBindDisplayFunc(leto_application_t *application,
+                         display_run_func_t func)
+{
+    if (application == NULL) return;
+    application->display_function = func;
 }

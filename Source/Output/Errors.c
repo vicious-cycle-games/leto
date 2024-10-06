@@ -23,7 +23,8 @@ static leto_error_context_t error_contexts[error_count] = {
     {"failed_glfw_init", "failed to init GLFW", LETO_GLFW_DOMAIN},
     {"failed_glad_init", "failed to init GLAD", LETO_GLAD_DOMAIN},
     {"failed_monitor_get", "failed to get monitor", LETO_GLFW_DOMAIN},
-    {"failed_window_create", "failed to create window", LETO_GLFW_DOMAIN}};
+    {"failed_window_create", "failed to create window", LETO_GLFW_DOMAIN},
+    {"no_display_func", "no display function bound", LETO_LETO_DOMAIN}};
 
 const char *OpenGLErrorString_(void)
 {

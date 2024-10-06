@@ -11,6 +11,7 @@ typedef enum leto_error
     failed_glad_init,
     failed_monitor_get,
     failed_window_create,
+    no_display_func,
     error_count
 } leto_error_t;
 
