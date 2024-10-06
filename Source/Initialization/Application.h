@@ -5,9 +5,10 @@
 #include <GLFW/glfw3.h>
 #include <Utilities/Types.h>
 
-typedef void (*display_run_func_t)(int window_width, int window_height);
 typedef leto_boolean_t (*display_init_func_t)(int window_width,
                                               int window_height);
+typedef void (*display_kill_func_t)(void);
+typedef void (*display_run_func_t)(int window_width, int window_height);
 
 typedef struct leto_application
 {
@@ -18,6 +19,7 @@ typedef struct leto_application
     } flags;
     GLFWwindow *window;
     display_init_func_t display_init_function;
+    display_kill_func_t display_kill_function;
     display_run_func_t display_function;
 } leto_application_t;
 
@@ -28,6 +30,8 @@ leto_boolean_t LetoRunApplication(leto_application_t *application);
 
 void LetoBindDisplayInitFunc(leto_application_t *application,
                              display_init_func_t func);
+void LetoBindDisplayKillFunc(leto_application_t *application,
+                             display_kill_func_t func);
 void LetoBindDisplayFunc(leto_application_t *application,
                          display_run_func_t func);
 

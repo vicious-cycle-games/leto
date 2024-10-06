@@ -7,7 +7,7 @@
  *
  * @copyright (c) 2024 - the Leto Team
  * This source code is under the AGPL v3.0. For information on what that
- * entails, please see the @file LICENSE.md file.
+ * entails, please see the attached @file LICENSE.md file.
  */
 
 #ifndef LETO__VERSION_H
@@ -37,7 +37,7 @@
  * running Leto binaries. This will increment by one every time a change is
  * pushed, and rolls over every new major or minor version.
  */
-#define LETO_VERSION_TWEAK 2
+#define LETO_VERSION_TWEAK 3
 
 /**
  * @brief A string representing the release cycle name / ID of the

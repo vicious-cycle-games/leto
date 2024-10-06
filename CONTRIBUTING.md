@@ -8,6 +8,46 @@ Index:
 - [Story Contribution](#story-contributions)
 - [Interaction Within the Community](#interaction-within-the-community)
 
+### Documentation
+All changes, once merged from pull request, will spend a brief time in the `dev` branch before being merged to main. This is an important precaution, as we must make sure that any and all content on the `main` branch is stable on all platforms. One caveat of this is that every interface pushed to `main` _must be documented_. Be it private functions in implementation files, static variables, or files, all must be documented properly before being merged to `main`. Undocumented interfaces _will stall the merge until documented_, so it's better for both maintainers and users if your pull request just documents itself before being merged.
+
+Documentation must be formatted properly. For files:
+
+```c
+/**
+ * @file [FILENAME]
+ * @author [NAME / PSEUDONYM] ([GITHUB LINK])
+ * @brief [DESCRIPTION]
+ * @implements [PUBLIC INTERFACE (only for implementation files)]
+ * @date [DATE]
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This source code is under the AGPL v3.0. For information on what that
+ * entails, please see the attached @file LICENSE.md file.
+ */
+```
+
+For functions:
+
+```c
+/**
+ * [FUNCTION NAMES]
+ * @author [NAME / PSUEDONYM] ([GITHUB LINK])
+ * @brief [DESCRIPTION]
+ * 
+ * @param [PARAM_NAME] -- [PARAM_USE]
+ * @return [RETURN_TYPE] -- [RETURN_VALUE]
+ */
+```
+
+For variables, types, or macros:
+
+```c
+/**
+ * @brief [VARIABLE_USE]
+ */
+```
+
 ### Public Interface Design
 A new public interface should be created if and only if the functionality cannot be merged into an already existing interface. If you see something that looks like it could be merged, create a pull request and maintainers will take a look at it. These interfaces must be organized and clearly documented. Firstly, an include guard _must_ be on every single public interface you define. This include guard must be in the following format:
 

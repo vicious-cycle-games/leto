@@ -24,11 +24,15 @@ static leto_error_context_t error_contexts[error_count] = {
     {"no_error", "no error", LETO_LETO_DOMAIN},
     {"failed_allocation", "failed to allocate memory", LETO_LETO_DOMAIN},
     {"failed_file_open", "failed to open file", LETO_STDC_DOMAIN},
+    {"failed_file_position", "failed to position file", LETO_STDC_DOMAIN},
+    {"failed_file_tell", "failed to get file size", LETO_STDC_DOMAIN},
+    {"failed_file_read", "failed to read file", LETO_STDC_DOMAIN},
     {"failed_glfw_init", "failed to init GLFW", LETO_GLFW_DOMAIN},
     {"failed_glad_init", "failed to init GLAD", LETO_GLAD_DOMAIN},
     {"failed_monitor_get", "failed to get monitor", LETO_GLFW_DOMAIN},
     {"failed_window_create", "failed to create window", LETO_GLFW_DOMAIN},
-    {"no_display_func", "no display function bound", LETO_LETO_DOMAIN}};
+    {"no_display_func", "no display function bound", LETO_LETO_DOMAIN},
+    {"failed_shader", "failed to compile shader", LETO_GLAD_DOMAIN}};
 
 const char *OpenGLErrorString_(void)
 {

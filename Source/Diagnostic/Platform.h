@@ -6,7 +6,7 @@
  *
  * @copyright (c) 2024 - the Leto Team
  * This source code is under the AGPL v3.0. For information on what that
- * entails, please see the @file LICENSE.md file.
+ * entails, please see the attached @file LICENSE.md file.
  */
 
 #ifndef LETO__PLATFORM_H

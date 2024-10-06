@@ -77,6 +77,9 @@ leto_boolean_t LetoRunApplication(leto_application_t *application)
         glfwSwapBuffers(application->window);
     }
 
+    if (application->display_kill_function != NULL)
+        application->display_kill_function();
+
     return leto_true_t;
 }
 
@@ -85,6 +88,13 @@ void LetoBindDisplayInitFunc(leto_application_t *application,
 {
     if (application == NULL) return;
     application->display_init_function = func;
+}
+
+void LetoBindDisplayKillFunc(leto_application_t *application,
+                             display_kill_func_t func)
+{
+    if (application == NULL) return;
+    application->display_kill_function = func;
 }
 
 void LetoBindDisplayFunc(leto_application_t *application,
