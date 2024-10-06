@@ -7,8 +7,7 @@ GLFWwindow *CreateWindow(const char *title)
     GLFWmonitor *primary_monitor = glfwGetPrimaryMonitor();
     if (primary_monitor == NULL)
     {
-        LetoReportError(leto_false_t, failed_monitor_get,
-                        LETO_FILE_CONTEXT);
+        LetoReportError(false, failed_monitor_get, LETO_FILE_CONTEXT);
         return NULL;
     }
     const GLFWvidmode *resolution = glfwGetVideoMode(primary_monitor);
@@ -26,8 +25,7 @@ GLFWwindow *CreateWindow(const char *title)
     GLFWwindow *created_window = glfwCreateWindow(
         resolution->width, resolution->height, title, NULL, NULL);
     if (created_window == NULL)
-        LetoReportError(leto_true_t, failed_window_create,
-                        LETO_FILE_CONTEXT);
+        LetoReportError(true, failed_window_create, LETO_FILE_CONTEXT);
 
     glfwMakeContextCurrent(created_window);
     glfwMaximizeWindow(created_window);

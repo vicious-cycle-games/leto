@@ -76,7 +76,7 @@ static const char *GetAdditionalContext_(uint8_t domain)
     }
 }
 
-void LetoReportError(leto_boolean_t fatal, leto_error_t code,
+void LetoReportError(bool fatal, leto_error_t code,
                      leto_file_context_t context)
 {
     if (code == error_count)
@@ -92,7 +92,7 @@ void LetoReportError(leto_boolean_t fatal, leto_error_t code,
             error_context.domain,
             GetAdditionalContext_(error_context.domain));
 
-    if (fatal == leto_true_t) exit(EXIT_FAILURE);
+    if (fatal == true) exit(EXIT_FAILURE);
     errid = code;
 }
 

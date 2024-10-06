@@ -40,8 +40,7 @@ void LetoDestroyCamera(leto_camera_t *camera)
     free(camera);
 }
 
-leto_boolean_t LetoSetCameraMatrix(leto_camera_t *camera,
-                                   unsigned int shader)
+bool LetoSetCameraMatrix(leto_camera_t *camera, unsigned int shader)
 {
     vec3 center_vec;
     glm_vec3_add(camera->position, camera->front, center_vec);
@@ -51,7 +50,7 @@ leto_boolean_t LetoSetCameraMatrix(leto_camera_t *camera,
     glUseProgram(shader);
     glUniformMatrix4fv(glGetUniformLocation(shader, "camera_view"), 1,
                        GL_FALSE, &matrix[0][0]);
-    return leto_true_t; // implement checks later
+    return true; // implement checks later
 }
 
 void LetoMoveCameraPosition(leto_camera_t *camera, float deltatime,

@@ -2,7 +2,6 @@
 #define LETO__CAMERA_H
 
 #include <CGLM/vec3.h>
-#include <Utilities/Types.h>
 
 typedef struct leto_camera
 {
@@ -31,8 +30,7 @@ typedef enum leto_movement_directions
 leto_camera_t *LetoCreateCamera(float fov, float speed, float sensitivity);
 void LetoDestroyCamera(leto_camera_t *camera);
 
-leto_boolean_t LetoSetCameraMatrix(leto_camera_t *camera,
-                                   unsigned int shader);
+bool LetoSetCameraMatrix(leto_camera_t *camera, unsigned int shader);
 
 void LetoMoveCameraPosition(leto_camera_t *camera, float deltatime,
                             leto_movement_directions_t direction);

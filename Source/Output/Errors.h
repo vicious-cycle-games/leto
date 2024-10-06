@@ -20,7 +20,7 @@ typedef enum leto_error
     error_count
 } leto_error_t;
 
-void LetoReportError(leto_boolean_t fatal, leto_error_t code,
+void LetoReportError(bool fatal, leto_error_t code,
                      leto_file_context_t context);
 
 leto_error_t LetoGetError(void);

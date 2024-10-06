@@ -10,8 +10,7 @@
     variable = malloc(size);                                              \
     if (variable == NULL)                                                 \
     {                                                                     \
-        LetoReportError(leto_true_t, failed_allocation,                   \
-                        LETO_FILE_CONTEXT);                               \
+        LetoReportError(true, failed_allocation, LETO_FILE_CONTEXT);      \
     }
 
 #endif // LETO__MACROS_H

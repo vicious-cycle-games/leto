@@ -1,11 +1,8 @@
 #ifndef LETO__TYPES_H
 #define LETO__TYPES_H
 
+#include <stdbool.h>
 #include <stdint.h>
-
-typedef uint8_t leto_boolean_t;
-#define leto_true_t 1
-#define leto_false_t 0
 
 typedef struct leto_file_context
 {

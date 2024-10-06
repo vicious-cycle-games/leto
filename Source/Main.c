@@ -12,10 +12,10 @@ float vertices[] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f,
 
 mat4 mod = GLM_MAT4_IDENTITY_INIT;
 
-leto_boolean_t init(int width, int height, void *ptr)
+bool init(int width, int height, void *ptr)
 {
     basic_shader = LetoLoadShader("basic");
-    if (basic_shader == 0) return leto_false_t;
+    if (basic_shader == 0) return false;
 
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -39,6 +39,8 @@ leto_boolean_t init(int width, int height, void *ptr)
     //                       (void *)(6 * sizeof(float)));
     // glEnableVertexAttribArray(2);
 
+    LetoSetProjection(basic_shader, 45.0f, (float)width / height, 0.1f,
+                      100.0f);
     glUseProgram(basic_shader);
     glUniformMatrix4fv(glGetUniformLocation(basic_shader, "model"), 1,
                        GL_FALSE, &mod[0][0]);
@@ -46,18 +48,17 @@ leto_boolean_t init(int width, int height, void *ptr)
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_CULL_FACE);
     glViewport(0, 0, width, height);
-    return leto_true_t;
+    return true;
 }
 
-void run(int width, int height, void *ptr)
+void run(float deltatime, void *ptr)
 {
     leto_application_t *application = (leto_application_t *)ptr;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    LetoSetProjection(basic_shader, 45.0f, (float)width / (float)height,
-                      0.1f, 100.0f);
+    LetoSetProjection(basic_shader, 45.0f, 0, 0.1f, 100.0f);
     LetoSetCameraMatrix(application->camera, basic_shader);
 
     glUseProgram(basic_shader);
@@ -69,8 +70,7 @@ void dkill(void) { LetoUnloadShader(basic_shader); }
 
 int main(void)
 {
-    leto_application_t *leto =
-        LetoInitApplication(leto_false_t, leto_false_t);
+    leto_application_t *leto = LetoInitApplication(false, false);
     if (leto == NULL) exit(EXIT_FAILURE);
 
     LetoBindDisplayInitFunc(leto, init, leto);
