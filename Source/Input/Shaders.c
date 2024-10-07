@@ -1,10 +1,28 @@
-#include "Shaders.h"
-#include <CGLM/cglm.h>
-#include <GLAD2/gl.h>
-#include <Output/Errors.h>
-#include <Utilities/Macros.h>
-#include <stdio.h>
-#include <string.h>
+/**
+ * @file Shaders.c
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Implements Leto's shader loading interface, including some
+ * various helper functions for setting important variables within the
+ * shaders.
+ * @implements Shaders.h
+ * @date 2024-10-07
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This source code is under the AGPL v3.0. For information on what that
+ * entails, please see the attached @file LICENSE.md file.
+ */
+
+#include "Shaders.h"       // Public interface parent.
+#include <Output/Errors.h> // Error reporting
+
+#include <Utilities/Macros.h> // Utility macros
+
+#include <CGLM/cam.h>  // GLM camera-related functions
+#include <CGLM/mat4.h> // GLM matrix 4x4
+#include <GLAD2/gl.h>  // OpenGL function pointers
+
+#include <stdio.h>  // Standard I/O functions
+#include <string.h> // String-related functionality
 
 static bool CheckShaderError_(unsigned int piece, unsigned int type)
 {
@@ -137,16 +155,27 @@ unsigned int LetoLoadShader(const char *name)
 
 void LetoUnloadShader(unsigned int id) { glDeleteProgram(id); }
 
-void LetoSetProjection(unsigned int id, float fov, float ratio,
-                       float znear, float zfar)
+bool LetoSetProjectionMatrix(unsigned int id, float fov, float ratio,
+                             float znear, float zfar)
 {
+    // To make it easier when calling, cache the width/height ratio.
     static float ratio_storage;
     if (ratio != 0) ratio_storage = ratio;
 
+    // Check to make sure the shader is valid.
     glUseProgram(id);
+    if (glGetError() != GL_NO_ERROR)
+    {
+        LetoReportError(false, invalid_shader, LETO_FILE_CONTEXT);
+        return false;
+    }
+
     mat4 projection = GLM_MAT4_IDENTITY_INIT;
     glm_perspective(glm_rad(fov), ratio_storage, znear, zfar, projection);
-
+    // This assumes the variable is named "projection_matrix" in the
+    // shader code.
     glUniformMatrix4fv(glGetUniformLocation(id, "projection_matrix"), 1,
                        GL_FALSE, &projection[0][0]);
+
+    return true;
 }

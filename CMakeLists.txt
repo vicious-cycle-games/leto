@@ -140,10 +140,8 @@ message(STATUS "Dependency Info:\n\tGLFW: ${GLFW_PATH}\n\tGLAD: "
 
 # Copy the assets over to the build directory so we can access them when
 # we run the game.
-message(STATUS "${PROJECT_NAME} asset directory: ${ASSET_PATH}")
 file(COPY ${RESOURCE_DIRECTORY} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-add_compile_definitions(ASSET_DIR="./rss")
-message(STATUS ${ASSET_DIR})
+add_compile_definitions(ASSET_DIR="./Resources")
     
 # Define and list the source files within the project.
 message(STATUS "${PROJECT_NAME} source files:")

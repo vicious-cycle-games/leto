@@ -17,6 +17,7 @@ typedef enum leto_error
     failed_window_create,
     no_display_func,
     failed_shader,
+    invalid_shader,
     error_count
 } leto_error_t;
 

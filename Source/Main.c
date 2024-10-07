@@ -68,8 +68,8 @@ bool init(int width, int height, void *ptr)
     //                       (void *)(6 * sizeof(float)));
     // glEnableVertexAttribArray(2);
 
-    LetoSetProjection(basic_shader, 45.0f, (float)width / height, 0.1f,
-                      100.0f);
+    LetoSetProjectionMatrix(basic_shader, 45.0f, (float)width / height,
+                            0.1f, 100.0f);
     glUseProgram(basic_shader);
     glUniformMatrix4fv(glGetUniformLocation(basic_shader, "model"), 1,
                        GL_FALSE, &mod[0][0]);
@@ -89,7 +89,7 @@ void run(float deltatime, void *ptr)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    LetoSetProjection(basic_shader, 45.0f, 0, 0.1f, 100.0f);
+    LetoSetProjectionMatrix(basic_shader, 45.0f, 0, 0.1f, 100.0f);
     LetoSetCameraMatrix(application->camera, basic_shader);
 
     glUseProgram(basic_shader);
