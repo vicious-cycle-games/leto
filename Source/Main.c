@@ -12,6 +12,35 @@ float vertices[] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f,
 
 mat4 mod = GLM_MAT4_IDENTITY_INIT;
 
+void ProcessKeyboard_(leto_application_t *application)
+{
+    if (glfwGetKey(application->window._, GLFW_KEY_W) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera,
+                               application->render_benchmarks.deltatime,
+                               forward);
+    if (glfwGetKey(application->window._, GLFW_KEY_S) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera,
+                               application->render_benchmarks.deltatime,
+                               backwards);
+    if (glfwGetKey(application->window._, GLFW_KEY_A) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera,
+                               application->render_benchmarks.deltatime,
+                               left);
+    if (glfwGetKey(application->window._, GLFW_KEY_D) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera,
+                               application->render_benchmarks.deltatime,
+                               right);
+    if (glfwGetKey(application->window._, GLFW_KEY_SPACE) == GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera,
+                               application->render_benchmarks.deltatime,
+                               up);
+    if (glfwGetKey(application->window._, GLFW_KEY_LEFT_CONTROL) ==
+        GLFW_PRESS)
+        LetoMoveCameraPosition(application->camera,
+                               application->render_benchmarks.deltatime,
+                               down);
+}
+
 bool init(int width, int height, void *ptr)
 {
     basic_shader = LetoLoadShader("basic");
@@ -53,6 +82,9 @@ bool init(int width, int height, void *ptr)
 void run(float deltatime, void *ptr)
 {
     leto_application_t *application = (leto_application_t *)ptr;
+
+    //! this needs a better location desperately
+    ProcessKeyboard_(application);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

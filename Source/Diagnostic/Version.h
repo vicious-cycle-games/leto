@@ -37,7 +37,7 @@
  * running Leto binaries. This will increment by one every time a change is
  * pushed, and rolls over every new major or minor version.
  */
-#define LETO_VERSION_TWEAK 9
+#define LETO_VERSION_TWEAK 10
 
 /**
  * @brief A string representing the release cycle name / ID of the
