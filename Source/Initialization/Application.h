@@ -19,6 +19,8 @@
 // GLFW functions and structures.
 #include <GLFW/glfw3.h>
 
+// The engine's windowing interface.
+#include <Initialization/Window.h>
 // The engine's camera interface.
 #include <Rendering/Camera.h>
 
@@ -146,26 +148,6 @@ typedef struct leto_application
         } kill;
     } display_functions;
     /**
-     * @brief A collection of data about the window object. The "width" and
-     * "height" values are automatically updated when the window is
-     * resized.
-     */
-    struct leto_window_info
-    {
-        /**
-         * @brief The actual window object.
-         */
-        GLFWwindow *_;
-        /**
-         * @brief The width of the window in screen coordinates.
-         */
-        int width;
-        /**
-         * @brief The height of the window in screen coordinates.
-         */
-        int height;
-    } window;
-    /**
      * @brief Some benchmark data polled by the display routine, like FPS
      * and deltatime.
      */
@@ -184,6 +166,10 @@ typedef struct leto_application
          */
         float fps;
     } render_benchmarks;
+    /**
+     * @brief The window of the application.
+     */
+    leto_window_t window;
     /**
      * @brief The camera object of the application. This defines the FOV,
      * viewport, etc.

@@ -12,7 +12,6 @@
  */
 
 #include "Application.h"   // Public interface parent
-#include "Window.h"        // Engine windowing functions
 #include <Output/Errors.h> // Error reporting
 
 #include <Diagnostic/Version.h> // Version information
@@ -87,16 +86,10 @@ leto_application_t *LetoInitApplication(bool paused, bool muted,
     if (glfw_initialized == GLFW_FALSE)
         LetoReportError(true, failed_glfw_init, LETO_FILE_CONTEXT);
 
-    application->window._ =
-        LetoCreateWindow("Leto | v" LETO_VERSION_STRING);
-    if (application->window._ == NULL) return NULL;
+    if (!LetoCreateWindow(&application->window, "Leto")) return NULL;
     glfwSetWindowUserPointer(application->window._, application);
-    glfwGetWindowSize(application->window._, &application->window.width,
-                      &application->window.height);
 
     // Disable the cursor, locking and hiding its sprite.
-    glfwSetInputMode(application->window._, GLFW_CURSOR,
-                     GLFW_CURSOR_DISABLED);
     glfwSetFramebufferSizeCallback(application->window._,
                                    FramebufferCallback_);
     glfwSetCursorPosCallback(application->window._, MouseCallback_);
@@ -116,7 +109,7 @@ void LetoTerminateApplication(leto_application_t *application)
 {
     if (application == NULL) return;
 
-    LetoDestroyWindow(application->window._);
+    LetoDestroyWindow(&application->window);
     LetoDestroyCamera(application->camera);
 
     glfwTerminate();

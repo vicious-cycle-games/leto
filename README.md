@@ -18,4 +18,7 @@ All operating systems that we plan to support in the future are below. Those mar
 Current items are marked with (x).
 
 - Mesh loader (x)
+- Stop making useless dynamic allocations (x)
+- Remove OpenGL in favor of Vulkan
 - Make the engine more reliable (finite loop caps, etc.)
+- Implement Wayland window leak fix in GLFW (look into)
