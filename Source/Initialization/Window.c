@@ -1,13 +1,30 @@
-#include "Window.h"
-#include <Diagnostic/Platform.h>
-#include <Output/Errors.h>
-#include <Utilities/Macros.h>
-#include <string.h>
+/**
+ * @file Window.c
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Implements the layer of abstraction Leto puts between the game
+ * and GLFW. This includes creation, deletion, and some limited setters.
+ * @implements Window.h
+ * @date 2024-10-07
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This source code is under the AGPL v3.0. For information on what that
+ * entails, please see the attached @file LICENSE.md file.
+ */
+
+#include "Window.h"        // Public interface parent
+#include <Output/Errors.h> // Error reporting
+
+#include <Diagnostic/Platform.h> // Platform macros
+#include <Utilities/Macros.h>    // Utility preprocessor macros
+
+#include <string.h> // Standard string utilities
 
 bool LetoCreateWindow(leto_window_t *window, const char *title)
 {
     if (window == NULL) return false;
 
+    // Get the GLFW representation of the user's "primary" monitor (really
+    // just the first one GLFW finds).
     GLFWmonitor *primary_monitor = glfwGetPrimaryMonitor();
     if (primary_monitor == NULL)
     {
@@ -32,15 +49,17 @@ bool LetoCreateWindow(leto_window_t *window, const char *title)
                                  "unset", NULL, NULL);
     if (window->_ == NULL)
         LetoReportError(true, failed_window_create, LETO_FILE_CONTEXT);
+    // Make our graphics context current on this thread.
     glfwMakeContextCurrent(window->_);
 
     window->width = resolution->width;
     window->height = resolution->height;
     if (title != NULL) LetoChangeWindowTitle(window, title);
-
-    glfwSetInputMode(window->_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetWindowPos(window->_, 0, 0);
     glfwMaximizeWindow(window->_);
+
+    // Hide and disable movement of the cursor. This ensures our cursor
+    // doesn't move off-screen or hit a border and break gameplay.
+    glfwSetInputMode(window->_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     return true;
 }
@@ -60,7 +79,9 @@ void LetoChangeWindowTitle(leto_window_t *window, const char *title)
 {
     if (window == NULL || window->_ == NULL) return;
 
-    free((char *)window->title);
+    // Copy the string so we don't have to rely on the provided pointer's
+    // lifetime.
+    if (window->title != NULL) free((char *)window->title);
     window->title = strdup(title);
 
     glfwSetWindowTitle(window->_, window->title);
