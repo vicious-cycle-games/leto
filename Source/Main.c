@@ -47,7 +47,6 @@ bool init(int width, int height, void *ptr)
 
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_CULL_FACE);
-    glViewport(0, 0, width, height);
     return true;
 }
 
@@ -66,16 +65,16 @@ void run(float deltatime, void *ptr)
     glDrawArrays(GL_TRIANGLES, 0, 9);
 }
 
-void dkill(void) { LetoUnloadShader(basic_shader); }
+void dkill(void *ptr) { LetoUnloadShader(basic_shader); }
 
 int main(void)
 {
-    leto_application_t *leto = LetoInitApplication(false, false);
+    leto_application_t *leto = LetoInitApplication(false, false, true);
     if (leto == NULL) exit(EXIT_FAILURE);
 
     LetoBindDisplayInitFunc(leto, init, leto);
-    LetoBindDisplayKillFunc(leto, dkill);
-    LetoBindDisplayFunc(leto, run, leto);
+    LetoBindDisplayKillFunc(leto, dkill, leto);
+    LetoBindDisplayRunFunc(leto, run, leto);
 
     LetoRunApplication(leto);
 

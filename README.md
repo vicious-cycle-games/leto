@@ -1,3 +1,5 @@
+**This is due for an update. Todo before merge to main.**
+
 # Leto
 Leto is a first-person open-world game set in the fictional world of Sveta. You play as Borya, an ex-special forces operative trying his best to survive in a world much different than it was when he enlisted.
 

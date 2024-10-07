@@ -31,7 +31,7 @@ For functions:
 
 ```c
 /**
- * [FUNCTION NAMES]
+ * [FUNCTION NAME]
  * @author [NAME / PSUEDONYM] ([GITHUB LINK])
  * @brief [DESCRIPTION]
  * 
