@@ -3,7 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
-GLFWwindow *CreateWindow(const char *title);
-void DestroyWindow(GLFWwindow *window);
+GLFWwindow *LetoCreateWindow(const char *title);
+void LetoDestroyWindow(GLFWwindow *window);
 
 #endif // LETO__WINDOW_H

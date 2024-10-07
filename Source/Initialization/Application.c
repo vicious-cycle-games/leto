@@ -1,10 +1,23 @@
-#include "Application.h"
-#include "Window.h"
-#include <Diagnostic/Version.h>
-#include <Output/Errors.h>
-#include <Utilities/Macros.h>
+/**
+ * @file Application.c
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Implements the base of Leto's engine. This includes
+ * initialization and termination functions, callbacks, and some more.
+ * @implements Application.h
+ * @date 2024-10-06
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This source code is under the AGPL v3.0. For information on what that
+ * entails, please see the attached @file LICENSE.md file.
+ */
 
-static bool initialized = false;
+#include "Application.h"   // Public interface parent
+#include "Window.h"        // Engine windowing functions
+#include <Output/Errors.h> // Error reporting
+
+#include <Diagnostic/Version.h> // Version information
+#include <Utilities/Macros.h>   // Utility macros
+
 static bool first_mouse = true;
 
 static void FramebufferCallback_(GLFWwindow *window, int width, int height)
@@ -66,8 +79,6 @@ static void ProcessKeyboard_(GLFWwindow *window)
 leto_application_t *LetoInitApplication(bool paused, bool muted,
                                         bool devmode)
 {
-    if (initialized == true) return NULL;
-
     leto_application_t *application;
     LETO_ALLOC_OR_FAIL(application, sizeof(leto_application_t));
     application->flags.paused = paused;
@@ -82,7 +93,8 @@ leto_application_t *LetoInitApplication(bool paused, bool muted,
     if (glfw_initialized == GLFW_FALSE)
         LetoReportError(true, failed_glfw_init, LETO_FILE_CONTEXT);
 
-    application->window._ = CreateWindow("Leto | v" LETO_VERSION_STRING);
+    application->window._ =
+        LetoCreateWindow("Leto | v" LETO_VERSION_STRING);
     if (application->window._ == NULL) return NULL;
     glfwGetWindowSize(application->window._, &application->window.width,
                       &application->window.height);
@@ -100,22 +112,23 @@ leto_application_t *LetoInitApplication(bool paused, bool muted,
 
     application->camera = LetoCreateCamera(45.0f, 2.5f, 0.1f);
 
-    initialized = true;
     return application;
 }
 
 void LetoTerminateApplication(leto_application_t *application)
 {
-    if (initialized == false || application == NULL) return;
+    if (application == NULL) return;
 
-    DestroyWindow(application->window._);
+    LetoDestroyWindow(application->window._);
+    LetoDestroyCamera(application->camera);
+
     glfwTerminate();
     free(application);
 }
 
 bool LetoRunApplication(leto_application_t *application)
 {
-    if (initialized != true || application == NULL) return false;
+    if (application == NULL) return false;
 
     // The initialization function is optional but the actual display
     // function is mandatory.

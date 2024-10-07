@@ -2,7 +2,7 @@
 #include <Diagnostic/Platform.h>
 #include <Output/Errors.h>
 
-GLFWwindow *CreateWindow(const char *title)
+GLFWwindow *LetoCreateWindow(const char *title)
 {
     GLFWmonitor *primary_monitor = glfwGetPrimaryMonitor();
     if (primary_monitor == NULL)
@@ -34,7 +34,7 @@ GLFWwindow *CreateWindow(const char *title)
     return created_window;
 }
 
-void DestroyWindow(GLFWwindow *window)
+void LetoDestroyWindow(GLFWwindow *window)
 {
     if (window == NULL) return;
     glfwDestroyWindow(window);
