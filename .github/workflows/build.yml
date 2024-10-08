@@ -1,0 +1,74 @@
+# Taken and adapted from the GLFW GitHub repository.
+# URL: https://github.com/glfw/glfw/blob/master/.github/workflows/build.yml
+
+name: Build/Test Leto
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+permissions:
+    statuses: write
+    contents: read
+
+jobs:
+    linux-clang:
+        name: Linux (clang)
+        runs-on: ubuntu-latest
+        timeout-minutes: 4
+        env:
+            CC: clang
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install Dependencies
+              run: |
+                  sudo apt update
+                  sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+            - name: Build Project (Debug)
+              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
+            - name: Build Project (Release)
+              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
+    linux-gcc:
+        name: Linux (gcc)
+        runs-on: ubuntu-latest
+        timeout-minutes: 4
+        env:
+            CC: gcc
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install Dependencies
+              run: |
+                  sudo apt update
+                  sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+            - name: Build Project (Debug)
+              run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug && cd build_debug && make
+            - name: Build Project (Release)
+              run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release && cd build_release && make
+    windows-vs2022:
+       name: Windows (vs2022)
+       runs-on: windows-latest
+       timeout-minutes: 4
+       steps:
+            - uses: actions/checkout@v4
+            - name: Build Project (Debug)
+              run: |
+                cmake -B build_debug -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
+                cmake --build build_debug --config Debug
+            - name: Build Project (Release)
+              run: |
+                cmake -B build_release -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+                cmake --build build_release --config Release
+    windows-mingw64:
+       name: Windows (mingw64)
+       runs-on: windows-latest
+       timeout-minutes: 4
+       steps:
+            - uses: actions/checkout@v4
+            - name: Build Project (Debug)
+              run: |
+                cmake -B build_debug -G "MinGW Makefiles" -A x64 -DCMAKE_BUILD_TYPE=Debug
+                cmake --build build_debug --config Debug
+            - name: Build Project (Release)
+              run: |
+                cmake -B build_release -G "MinGW Makefiles" -A x64 -DCMAKE_BUILD_TYPE=Release
+                cmake --build build_release --config Release
