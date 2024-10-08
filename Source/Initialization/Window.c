@@ -46,7 +46,7 @@ bool LetoCreateWindow(leto_window_t *window, const char *title)
 #endif
 
     window->_ = glfwCreateWindow(resolution->width, resolution->height,
-                                 "unset", NULL, NULL);
+                                 "unset", primary_monitor, NULL);
     if (window->_ == NULL)
         LetoReportError(true, failed_window_create, LETO_FILE_CONTEXT);
     // Make our graphics context current on this thread.
@@ -54,8 +54,8 @@ bool LetoCreateWindow(leto_window_t *window, const char *title)
 
     window->width = resolution->width;
     window->height = resolution->height;
-    if (title != NULL) LetoChangeWindowTitle(window, title);
-    glfwMaximizeWindow(window->_);
+    window->title = NULL;
+    LetoChangeWindowTitle(window, title);
 
     // Hide and disable movement of the cursor. This ensures our cursor
     // doesn't move off-screen or hit a border and break gameplay.
@@ -69,7 +69,7 @@ void LetoDestroyWindow(leto_window_t *window)
     if (window == NULL || window->_ == NULL) return;
     glfwDestroyWindow(window->_);
 
-    free((char *)window->title);
+    if (window->title != NULL) free(window->title);
     window->title = NULL;
     window->width = 0;
     window->height = 0;
@@ -81,7 +81,7 @@ void LetoChangeWindowTitle(leto_window_t *window, const char *title)
 
     // Copy the string so we don't have to rely on the provided pointer's
     // lifetime.
-    if (window->title != NULL) free((char *)window->title);
+    if (window->title != NULL) free(window->title);
     window->title = strdup(title);
 
     glfwSetWindowTitle(window->_, window->title);

@@ -12,7 +12,7 @@ float vertices[] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f,
 
 mat4 mod = GLM_MAT4_IDENTITY_INIT;
 
-void ProcessKeyboard_(leto_application_t *application)
+static void ProcessKeyboard_(leto_application_t *application)
 {
     if (glfwGetKey(application->window._, GLFW_KEY_W) == GLFW_PRESS)
         LetoMoveCameraPosition(application->camera,
@@ -41,8 +41,10 @@ void ProcessKeyboard_(leto_application_t *application)
                                down);
 }
 
-bool init(int width, int height, void *ptr)
+static bool init(int width, int height, void *ptr)
 {
+    (void)ptr;
+
     basic_shader = LetoLoadShader("basic");
     if (basic_shader == 0) return false;
 
@@ -79,8 +81,10 @@ bool init(int width, int height, void *ptr)
     return true;
 }
 
-void run(float deltatime, void *ptr)
+static void run(float deltatime, void *ptr)
 {
+    (void)deltatime;
+
     leto_application_t *application = (leto_application_t *)ptr;
 
     //! this needs a better location desperately
@@ -97,7 +101,11 @@ void run(float deltatime, void *ptr)
     glDrawArrays(GL_TRIANGLES, 0, 9);
 }
 
-void dkill(void *ptr) { LetoUnloadShader(basic_shader); }
+static void dkill(void *ptr)
+{
+    (void)ptr;
+    LetoUnloadShader(basic_shader);
+}
 
 int main(void)
 {

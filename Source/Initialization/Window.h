@@ -41,7 +41,7 @@ typedef struct leto_window
     /**
      * @brief The title of the window.
      */
-    const char *title;
+    char *title;
 } leto_window_t;
 
 /**

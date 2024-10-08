@@ -59,7 +59,9 @@
 // Define any debug state-specific macros.
 #if !defined(LETO_DEBUG)
     #define LETO_BUILD_STATE "release"
-    #define NDEBUG
+    #if !defined(NDEBUG)
+        #define NDEBUG
+    #endif
 #else
     #define LETO_BUILD_STATE "debug"
 #endif

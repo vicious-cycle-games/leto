@@ -110,9 +110,9 @@ void LetoMoveCameraOrientation(leto_camera_t *camera, float x, float y)
     if (camera->pitch < -89.0f) camera->pitch = -89.0f;
 
     glm_normalize_to(
-        (vec3){cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch)),
-               sin(glm_rad(camera->pitch)),
-               sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch))},
+        (vec3){cosf(glm_rad(camera->yaw)) * cosf(glm_rad(camera->pitch)),
+               sinf(glm_rad(camera->pitch)),
+               sinf(glm_rad(camera->yaw)) * cosf(glm_rad(camera->pitch))},
         camera->front);
 
     camera->last_x = x;
