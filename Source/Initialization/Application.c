@@ -14,8 +14,9 @@
 #include "Application.h"   // Public interface parent
 #include <Output/Errors.h> // Error reporting
 
-#include <Diagnostic/Version.h> // Version information
-#include <Utilities/Macros.h>   // Utility macros
+#include <Diagnostic/Platform.h> // Platform information
+#include <Diagnostic/Version.h>  // Version information
+#include <Utilities/Macros.h>    // Utility macros
 
 /**
  * FramebufferCallback
@@ -76,6 +77,10 @@ leto_application_t *LetoInitApplication(bool paused, bool muted,
     application->flags.paused = paused;
     application->flags.muted = muted;
     application->flags.developer = devmode;
+
+#if defined(LETO_WAYLAND)
+    glfwInitHint(GLFW_WAYLAND_LIBDECOR, GLFW_WAYLAND_DISABLE_LIBDECOR);
+#endif
 
     // OpenGL Core v4.6.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);

@@ -21,7 +21,7 @@
  * @brief The directory in which all shaders should be placed, and that
  * which we assume them to be placed in the shader loading functions.
  */
-#define LETO_SHADER_PATH ASSET_DIR "/Shaders/"
+#define LETO_SHADER_PATH "Shaders"
 
 /**
  * LoadShader

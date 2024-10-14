@@ -12,9 +12,10 @@
  * entails, please see the attached @file LICENSE.md file.
  */
 
-#include "Shaders.h"       // Public interface parent.
-#include <Output/Errors.h> // Error reporting
+#include "Shaders.h" // Public interface parent
+#include "Files.h"   // File operations
 
+#include <Output/Errors.h>    // Error reporting
 #include <Utilities/Macros.h> // Utility macros
 
 #include <CGLM/cam.h>  // GLM camera-related functions
@@ -24,9 +25,22 @@
 #include <stdio.h>  // Standard I/O functions
 #include <string.h> // String-related functionality
 
+/**
+ * CheckShaderError
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief See if any errors have occurred during the compilation of
+ * shaders. The error reporting method for this is different than regular
+ * @ref glGetError, so we print a string in advance that explains the
+ * error.
+ *
+ * @param piece The item we're trying to get an error report from.
+ * @param type The type of item; @ref GL_VERTEX_SHADER, @ref
+ * GL_FRAGMENT_SHADER, or @ref GL_PROGRAM.
+ * @return bool -- True for no error, false for an error occurred.
+ */
 static bool CheckShaderError_(unsigned int piece, unsigned int type)
 {
-    int success_flag = false;
+    int success_flag = false; // OpenGL reports into an integer.
     char error_info[1024];
 
     if (type == GL_VERTEX_SHADER || type == GL_FRAGMENT_SHADER)
@@ -37,7 +51,6 @@ static bool CheckShaderError_(unsigned int piece, unsigned int type)
             glGetShaderInfoLog(piece, 1024, NULL, error_info);
             fprintf(stderr, "OpenGL shader compilation error:\n%s\n",
                     error_info);
-            return false;
         }
     }
     else
@@ -47,107 +60,64 @@ static bool CheckShaderError_(unsigned int piece, unsigned int type)
         {
             glGetProgramInfoLog(piece, 1024, NULL, error_info);
             fprintf(stderr, "OpenGL shader link error:\n%s\n", error_info);
-            return false;
         }
     }
+    return success_flag;
+}
 
-    return true;
+/**
+ * CompileShader
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Compile the given type of shader within the given shader folder.
+ *
+ * @param shader A storage position for the OpenGL ID of the shader object.
+ * @param name The name of the shader's containing folder.
+ * @param type The OpenGL type of the shader, i.e @ref GL_VERTEX_SHADER,
+ * @ref GL_FRAGMENT_SHADER, etc.
+ * @return void -- Nothing.
+ */
+static void CompileShader_(unsigned int *shader, const char *name,
+                           unsigned int type)
+{
+    char *buffer = NULL;
+    LetoReadFile(&buffer, 0, LETO_SHADER_PATH "/%s/%s", name,
+                 (type == GL_VERTEX_SHADER ? "vert.vs" : "frag.fs"));
+    if (buffer == NULL) *shader = 0;
+
+    const char *code = buffer;
+    *shader = glCreateShader(type);
+    glShaderSource(*shader, 1, &code, NULL);
+    glCompileShader(*shader);
+
+    if (CheckShaderError_(*shader, type) == false)
+    {
+        LetoReportError(false, failed_shader, LETO_FILE_CONTEXT);
+        *shader = 0;
+        return;
+    }
+
+    free(buffer);
 }
 
 unsigned int LetoLoadShader(const char *name)
 {
-    if (name == NULL) return 0;
+    if (name == 0) return 0;
 
-    size_t path_length = 29 + strlen(name);
-    char *vertex_path, *fragment_path;
-
-    LETO_ALLOC_OR_FAIL(vertex_path, path_length);
-    LETO_ALLOC_OR_FAIL(fragment_path, path_length);
-    snprintf(vertex_path, path_length, LETO_SHADER_PATH "%s/vert.vs",
-             name);
-    snprintf(fragment_path, path_length, LETO_SHADER_PATH "%s/frag.fs",
-             name);
-
-    FILE *vertex_file = fopen(vertex_path, "rb");
-    FILE *fragment_file = fopen(fragment_path, "rb");
-    free(vertex_path);
-    free(fragment_path);
-
-    if (vertex_file == NULL || fragment_file == NULL)
-    {
-        LetoReportError(false, failed_file_open, LETO_FILE_CONTEXT);
-        return 0;
-    }
-
-    if (fseek(vertex_file, 0L, SEEK_END) == -1 ||
-        fseek(fragment_file, 0L, SEEK_END) == -1)
-    {
-        LetoReportError(false, failed_file_position, LETO_FILE_CONTEXT);
-        return 0;
-    }
-
-    long vertex_size = ftell(vertex_file);
-    long fragment_size = ftell(fragment_file);
-    if (vertex_size == -1 || fragment_size == -1)
-    {
-        LetoReportError(false, failed_file_tell, LETO_FILE_CONTEXT);
-        return 0;
-    }
-    // Reset the file positioner.
-    if (fseek(vertex_file, 0L, SEEK_SET) == -1 ||
-        fseek(fragment_file, 0L, SEEK_SET) == -1)
-    {
-        LetoReportError(false, failed_file_position, LETO_FILE_CONTEXT);
-        return 0;
-    }
-
-    char *vertex_raw = calloc((size_t)vertex_size + 1, 1);
-    char *fragment_raw = calloc((size_t)fragment_size + 1, 1);
-    if (vertex_raw == NULL || fragment_raw == NULL)
-        LetoReportError(true, failed_allocation, LETO_FILE_CONTEXT);
-
-    if (fread(vertex_raw, 1, (size_t)vertex_size, vertex_file) !=
-            (size_t)vertex_size ||
-        fread(fragment_raw, 1, (size_t)fragment_size, fragment_file) !=
-            (size_t)fragment_size)
-    {
-        LetoReportError(false, failed_file_read, LETO_FILE_CONTEXT);
-        return 0;
-    }
-
-    vertex_raw[vertex_size] = '\0';
-    fragment_raw[fragment_size] = '\0';
-
-    fclose(vertex_file);
-    fclose(fragment_file);
-
-    const char *vertex_code = vertex_raw, *fragment_code = fragment_raw;
-    unsigned int vertex = glCreateShader(GL_VERTEX_SHADER),
-                 fragment = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(vertex, 1, &vertex_code, NULL);
-    glCompileShader(vertex);
-    if (CheckShaderError_(vertex, GL_VERTEX_SHADER) == false)
-    {
-        LetoReportError(false, failed_shader, LETO_FILE_CONTEXT);
-        return 0;
-    }
-
-    glShaderSource(fragment, 1, &fragment_code, NULL);
-    glCompileShader(fragment);
-    if (CheckShaderError_(fragment, GL_FRAGMENT_SHADER) == false)
-    {
-        LetoReportError(false, failed_shader, LETO_FILE_CONTEXT);
-        return 0;
-    }
-
-    free(vertex_raw), free(fragment_raw);
+    unsigned int vertex, fragment;
+    CompileShader_(&vertex, name, GL_VERTEX_SHADER);
+    CompileShader_(&fragment, name, GL_FRAGMENT_SHADER);
+    if (vertex == 0 || fragment == 0) return 0;
 
     unsigned int created_shader = glCreateProgram();
     glAttachShader(created_shader, vertex);
     glAttachShader(created_shader, fragment);
     glLinkProgram(created_shader);
-    CheckShaderError_(created_shader, GL_PROGRAM);
+
+    if (CheckShaderError_(created_shader, GL_PROGRAM) == false)
+    {
+        LetoReportError(false, failed_shader, LETO_FILE_CONTEXT);
+        return 0;
+    }
 
     glDeleteShader(vertex), glDeleteShader(fragment);
     return created_shader;
