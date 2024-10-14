@@ -43,8 +43,8 @@ void LetoToggleFileV(FILE **file, const char *mode,
     char *path = NULL;
     LETO_ALLOC_OR_FAIL(path, LETO_MAX_PATH_LENGTH);
     sprintf(path, "%s/", ASSET_DIR);
-    vsnprintf(path + sizeof(ASSET_DIR), LETO_MAX_PATH_LENGTH, path_format,
-              args);
+    vsnprintf(path + sizeof(ASSET_DIR),
+              LETO_MAX_PATH_LENGTH - sizeof(ASSET_DIR), path_format, args);
 
     *file = fopen(path, mode);
     if (*file == NULL)
