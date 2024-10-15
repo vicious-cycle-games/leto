@@ -29,7 +29,9 @@
 #define LETO_STRINGIFY(x) LSTRIFY_INTERNAL_(x)
 
 /**
- * @brief
+ * @brief A macro to shorten the writing of a allocation checks. This
+ * utilizes the @ref malloc function, and if @ref malloc fails, a fatal
+ * @ref failed_allocation error is thrown.
  */
 #define LETO_ALLOC_OR_FAIL(variable, size)                                \
     variable = malloc(size);                                              \
