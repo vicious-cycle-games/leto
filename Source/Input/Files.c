@@ -1,5 +1,5 @@
 /**
- * @file Files.h
+ * @file Files.c
  * @author Israfiel (https://github.com/israfiel-a)
  * @brief Implements some basic file reading and opening functions.
  * @implements Files.h
