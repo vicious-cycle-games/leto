@@ -1,14 +1,25 @@
-#include "Camera.h"
-#include <CGLM/cam.h>
-#include <CGLM/mat4.h>
-#include <GLAD2/gl.h>
-#include <Output/Errors.h>
-#include <Utilities/Macros.h>
+/**
+ * @file Camera.c
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Provides implementation for Leto's camera object and all of its
+ * helper functions.
+ * @implements Camera.h
+ * @date 2024-10-15
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This source code is under the AGPL v3.0. For information on what that
+ * entails, please see the attached @file LICENSE.md file.
+ */
 
-leto_camera_t *LetoCreateCamera(float fov, float speed, float sensitivity)
+#include "Camera.h" // Public interface parent
+
+#include <CGLM/cam.h> // GLM camera functions (lookat, etc.)
+#include <GLAD2/gl.h> // OpenGL function pointers
+
+bool LetoCreateCamera(leto_camera_t *camera, float fov, float speed,
+                      float sensitivity)
 {
-    leto_camera_t *camera;
-    LETO_ALLOC_OR_FAIL(camera, sizeof(leto_camera_t));
+    if (camera == NULL) return false;
 
     camera->position[0] = 0.0f;
     camera->position[1] = 0.0f;
@@ -34,13 +45,7 @@ leto_camera_t *LetoCreateCamera(float fov, float speed, float sensitivity)
     return camera;
 }
 
-void LetoDestroyCamera(leto_camera_t *camera)
-{
-    if (camera == NULL) return;
-    free(camera);
-}
-
-bool LetoSetCameraMatrix(leto_camera_t *camera, unsigned int shader)
+void LetoSetCameraMatrix(leto_camera_t *camera, unsigned int shader)
 {
     vec3 center_vec;
     glm_vec3_add(camera->position, camera->front, center_vec);
@@ -50,7 +55,6 @@ bool LetoSetCameraMatrix(leto_camera_t *camera, unsigned int shader)
     glUseProgram(shader);
     glUniformMatrix4fv(glGetUniformLocation(shader, "camera_view"), 1,
                        GL_FALSE, &matrix[0][0]);
-    return true; // implement checks later
 }
 
 void LetoMoveCameraPosition(leto_camera_t *camera, float deltatime,

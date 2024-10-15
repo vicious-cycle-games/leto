@@ -15,28 +15,28 @@ mat4 mod = GLM_MAT4_IDENTITY_INIT;
 static void ProcessKeyboard_(leto_application_t *application)
 {
     if (glfwGetKey(application->window._, GLFW_KEY_W) == GLFW_PRESS)
-        LetoMoveCameraPosition(application->camera,
+        LetoMoveCameraPosition(&application->camera,
                                application->render_benchmarks.deltatime,
                                forward);
     if (glfwGetKey(application->window._, GLFW_KEY_S) == GLFW_PRESS)
-        LetoMoveCameraPosition(application->camera,
+        LetoMoveCameraPosition(&application->camera,
                                application->render_benchmarks.deltatime,
                                backwards);
     if (glfwGetKey(application->window._, GLFW_KEY_A) == GLFW_PRESS)
-        LetoMoveCameraPosition(application->camera,
+        LetoMoveCameraPosition(&application->camera,
                                application->render_benchmarks.deltatime,
                                left);
     if (glfwGetKey(application->window._, GLFW_KEY_D) == GLFW_PRESS)
-        LetoMoveCameraPosition(application->camera,
+        LetoMoveCameraPosition(&application->camera,
                                application->render_benchmarks.deltatime,
                                right);
     if (glfwGetKey(application->window._, GLFW_KEY_SPACE) == GLFW_PRESS)
-        LetoMoveCameraPosition(application->camera,
+        LetoMoveCameraPosition(&application->camera,
                                application->render_benchmarks.deltatime,
                                up);
     if (glfwGetKey(application->window._, GLFW_KEY_LEFT_CONTROL) ==
         GLFW_PRESS)
-        LetoMoveCameraPosition(application->camera,
+        LetoMoveCameraPosition(&application->camera,
                                application->render_benchmarks.deltatime,
                                down);
 }
@@ -94,7 +94,7 @@ static void run(float deltatime, void *ptr)
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     LetoSetProjectionMatrix(basic_shader, 45.0f, 0, 0.1f, 100.0f);
-    LetoSetCameraMatrix(application->camera, basic_shader);
+    LetoSetCameraMatrix(&application->camera, basic_shader);
 
     glUseProgram(basic_shader);
     glBindVertexArray(vao);

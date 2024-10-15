@@ -174,7 +174,7 @@ typedef struct leto_application
      * @brief The camera object of the application. This defines the FOV,
      * viewport, etc.
      */
-    leto_camera_t *camera;
+    leto_camera_t camera;
 } leto_application_t;
 
 /**

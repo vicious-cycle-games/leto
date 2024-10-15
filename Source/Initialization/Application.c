@@ -60,12 +60,12 @@ static void MouseCallback_(GLFWwindow *window, double x, double y)
     static bool mouse_moved;
     if (mouse_moved == false)
     {
-        application->camera->last_x = (float)x;
-        application->camera->last_y = (float)y;
+        application->camera.last_x = (float)x;
+        application->camera.last_y = (float)y;
         mouse_moved = true;
     }
 
-    LetoMoveCameraOrientation(application->camera, (float)x, (float)y);
+    LetoMoveCameraOrientation(&application->camera, (float)x, (float)y);
 }
 
 leto_application_t *LetoInitApplication(bool paused, bool muted,
@@ -105,7 +105,7 @@ leto_application_t *LetoInitApplication(bool paused, bool muted,
 
     // Initialize the camera with an FOV of 45, a movement speed of 2.5,
     // and a sensitivity of 0.1.
-    application->camera = LetoCreateCamera(45.0f, 2.5f, 0.1f);
+    LetoCreateCamera(&application->camera, 45.0f, 2.5f, 0.1f);
 
     return application;
 }
@@ -115,7 +115,6 @@ void LetoTerminateApplication(leto_application_t *application)
     if (application == NULL) return;
 
     LetoDestroyWindow(&application->window);
-    LetoDestroyCamera(application->camera);
 
     glfwTerminate();
     free(application);
