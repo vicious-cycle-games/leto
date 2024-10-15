@@ -29,6 +29,11 @@
 #define LETO_STRINGIFY(x) LSTRIFY_INTERNAL_(x)
 
 /**
+ * @brief The max path length Leto will tolerate.
+ */
+#define LETO_MAX_PATH_LENGTH 256
+
+/**
  * @brief A macro to shorten the writing of a allocation checks. This
  * utilizes the @ref malloc function, and if @ref malloc fails, a fatal
  * @ref failed_allocation error is thrown.

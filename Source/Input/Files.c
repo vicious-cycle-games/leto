@@ -1,8 +1,20 @@
-#include "Files.h"
-#include <Output/Errors.h>
-#include <Utilities/Macros.h>
-#include <stdarg.h>
-#include <string.h>
+/**
+ * @file Files.h
+ * @author Israfiel (https://github.com/israfiel-a)
+ * @brief Implements some basic file reading and opening functions.
+ * @implements Files.h
+ * @date 2024-10-15
+ *
+ * @copyright (c) 2024 - the Leto Team
+ * This source code is under the AGPL v3.0. For information on what that
+ * entails, please see the attached @file LICENSE.md file.
+ */
+
+#include "Files.h"            // Public interface parent
+#include <Output/Errors.h>    // Error reporting
+#include <Utilities/Macros.h> // Utility macros like LETO_MAX_PATH_LENGTH
+
+#include <string.h> // Standard string utilities
 
 void LetoToggleFile(FILE **file, const char *mode, const char *path_format,
                     ...)
@@ -53,20 +65,22 @@ void LetoToggleFileV(FILE **file, const char *mode,
     free(path);
 }
 
-void LetoReadFile(char **buffer, size_t buffer_size,
-                  const char *path_format, ...)
+void LetoReadFile(char **buffer, size_t read_size, const char *path_format,
+                  ...)
 {
     FILE *file = NULL;
 
     va_list args;
     va_start(args, path_format);
-
+    // Open the file in "read binary" mode.
     LetoToggleFileV(&file, "rb", path_format, args);
     if (file == NULL) return;
+    va_end(args);
 
-    size_t file_size = buffer_size;
-    if (file_size == 0)
+    size_t file_size = read_size;
+    if (read_size == 0)
     {
+        // Go to the end of the file.
         if (fseek(file, 0L, SEEK_END) == -1)
         {
             LetoReportError(false, failed_file_position,
@@ -74,6 +88,8 @@ void LetoReadFile(char **buffer, size_t buffer_size,
             return;
         }
 
+        // Grab the current position, and since we're at the end, this is
+        // the length of the file.
         file_size = (size_t)ftell(file);
         if (file_size == -1)
         {
@@ -88,16 +104,17 @@ void LetoReadFile(char **buffer, size_t buffer_size,
                             LETO_FILE_CONTEXT);
             return;
         }
-
-        LETO_ALLOC_OR_FAIL(*buffer, file_size + 1);
     }
+    // Allocate the buffer to the needed size.
+    LETO_ALLOC_OR_FAIL(*buffer, file_size + 1);
 
     if (fread(*buffer, 1, file_size, file) != file_size)
     {
         LetoReportError(false, failed_file_read, LETO_FILE_CONTEXT);
         return;
     }
+    // Add in a terminating NUL character since fread does not.
     (*buffer)[file_size] = '\0';
-    LetoToggleFileV(&file, NULL, NULL, args);
-    va_end(args);
+    // Close the file.
+    LetoToggleFile(&file, NULL, NULL);
 }
